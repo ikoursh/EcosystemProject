@@ -10,7 +10,7 @@ if config["GPU"]["USE_GPU"].lower() == "true":
         import cupy as xp
     except:
         raise Exception(
-            "Error importing cupy. To ensure that your installation is setup properly go to https://docs-cupy.chainer.org/en/stable/install.html")
+            "Error importing CuPy. To ensure that your installation is setup properly go to https://docs-cupy.chainer.org/en/stable/install.html")
 else:
     import numpy as xp
 var = numpy.ndarray
@@ -21,10 +21,10 @@ def s(a: numpy.ndarray) -> numpy.ndarray:
     Sigmoid Function
 
     Args:
-        a(numpy.ndarray): input
+        a(numpy.ndarray): Input
 
     Returns:
-        numpy.ndarray: result
+        numpy.ndarray: Result
     """
     return 1 / (1 + xp.exp(-a))
 
@@ -34,11 +34,11 @@ def m(a: numpy.ndarray) -> numpy.ndarray:
     Mutate Function
 
     Args:
-        a(numpy.ndarray): input
+        a(numpy.ndarray): Input
 
 
     Returns:
-        numpy.ndarray: result
+        numpy.ndarray: Result
     """
     return a + xp.random.normal(0, 0.1)
 
@@ -49,15 +49,15 @@ class NNLayer:
 
 
     Args:
-        nodes(int): the number of nodes this layer should have
-        prev_nodes(int): the number of nodes the previous layer has
+        nodes(int): The number of nodes this layer should have
+        prev_nodes(int): The number of nodes the previous layer has
 
     Attributes:
-        nodes(int): the number of nodes this layer should have
-        prev_nodes(int): the number of nodes the previous layer has
+        nodes(int): The number of nodes this layer should have
+        prev_nodes(int): The number of nodes the previous layer has
 
-        weights(numpy.ndarray): a matrix consisting of the weights of the layer
-        bias(numpy.ndarray): a vector consisting of the biases of the layer
+        weights(numpy.ndarray): A matrix consisting of the weights of the layer
+        bias(numpy.ndarray): A vector consisting of the biases of the layer
     """
 
     def __init__(self, nodes: int, prev_nodes: int) -> None:
@@ -70,8 +70,10 @@ class NNLayer:
         """
         Feed forward inputs into the layer
 
+        .. math:: a^{(L)} = \\sigma (\\sum_{i=1}^{m} W_{i}^{(L)}  a_{i}^{(L-1)}  + b)
+
         Args:
-            xs(numpy.ndarray): inputs
+            xs(numpy.ndarray): Inputs
 
         Returns:
             numpy.ndarray: Layer outputs for the inputs
@@ -98,16 +100,13 @@ class NeuralNetwork:
     A neural network
 
     Args:
-        nodes(list[int]): a list of the amount of nodes for every layer
+        nodes(list[int]): A list of the amount of nodes for every layer
 
     Attributes:
-        layers(list[NNLayer]): a list of all the layers composing the neural network
-
-    Examples:
-        my_nn = NeuralNetwork([5, 3, 3, 2])
+        layers(list[NNLayer]): A list of all the layers composing the neural network
 
     Raises:
-        Exception: if the nodes list is shorter than 2
+        Exception: If the nodes list is shorter than 2
 
     """
 
@@ -125,11 +124,11 @@ class NeuralNetwork:
         Feed forward the input throughout all the layers of the neural network
 
         Args:
-            xs(numpy.ndarray): input
+            xs(numpy.ndarray): Input
 
 
         Returns:
-            numpy.ndarray: the output of the neural network
+            numpy.ndarray: The output of the neural network
 
         Warnings:
             it is advised that all inputs be between 0 and 1
