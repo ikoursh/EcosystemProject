@@ -181,7 +181,7 @@ class Agent:
         if self.mass > self.final_mass * AGING_TIME:
             self.health -= AGE_CONST
 
-    def think(self, d_food: float, d_agent: float, s_agent) -> float:
+    def think(self, d_food: float, d_agent: float, s_agent: 'Agent') -> float:
         """
         Trigger the agent's :attr:`model2.Agent.move_brain` and make it decide where to go.
         Energy is subtracted for thinking using :attr:`model2.Agent.iq`.
@@ -192,7 +192,7 @@ class Agent:
         Args:
             d_food(float): The distance to the nearest food item
             d_agent(float): The distance to the nearest agent
-            s_agent(float): The strength of the nearest agent
+            s_agent(Agent): The strength of the nearest agent
 
         Returns:
             float: DX, fed into :meth:`model2.Agent.move`
@@ -597,6 +597,7 @@ class Sim:
             if abs(
                     dfood
             ) < self.col_const:  # if the abs distance is smaller than the required collision const
+                # self.food.pop(food_index-1 if dtf < dlf else food_index-2)
                 self.food.remove(tf if dtf < dlf else lf)  # remove food
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
