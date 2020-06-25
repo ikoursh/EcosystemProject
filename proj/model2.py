@@ -505,7 +505,7 @@ class Sim:
         self.gcsteps += 1
         if csteps % print_freq == 0:
             print(
-                "{}% ({} of {}) current population size: {} ammont of food: {}".
+                "{}% ({} of {}) current population size: {} amount of food: {}".
                     format(round((csteps / steps) * 100, 2), csteps, steps,
                            len(self.agents), len(self.food)))  # print status
         # append statistics:
@@ -554,6 +554,7 @@ class Sim:
         )  # sort agents by position, allows to quickly determine closest agent with low complexity
         self.food.sort(key=lambda ag: ag.x)
         food_index = 0
+        debug = []
         for a in range(len(self.agents)):
             if a >= len(self.agents):  # agents can be removed but the range isn't updated
                 return True
@@ -562,13 +563,26 @@ class Sim:
 
             tf = None
             lf = None
+            tmp_fi = food_index
+            debug_line = "food length: " + str(len(self.food)) + " start search index: " + str(food_index)
             for i in range(food_index, len(self.food)):
-                if self.food[i].x > ax:
-                    food_index = i - 1
-                    tf = self.food[i]
-                    break
-                else:
-                    lf = self.food[i]
+                try:
+                    if self.food[i].x > ax:
+                        food_index = i - 1
+                        tf = self.food[i]
+                        debug_line += " found food index " + str(i) + " new food index set to " + str(i - 1)
+                        break
+                    else:
+                        lf = self.food[i]
+                except:
+                    print("there was an unexpected crash")
+                    print("Agent number " + str(a) + " out of " + str(len(self.agents)))
+                    print("Food index at crash was " + str(i))
+                    print("Length of food list is " + str(len(self.food)))
+                    print("The food index at the start of the search was " + str(tmp_fi))
+                    print("\n\n debug: ")
+                    print(debug)
+                    exit(-1)
 
             if tf is None:
                 tf = self.food[0]
@@ -583,10 +597,13 @@ class Sim:
             if abs(
                     dfood
             ) < self.col_const:  # if the abs distance is smaller than the required collision const
-                self.food.pop(food_index - 1 if dtf < dlf else food_index - 2)  # remove food
+                self.food.remove(tf if dtf < dlf else lf)  # remove food
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
-                food_index -= 2
+                food_index -= 1
+                debug_line += " food was consumed, new food index is now " + str(food_index)
+
+            debug.append(debug_line)
 
             # because agents have been sorted by x values, it is easy to find the closest agent by comparing the agent before and the one after
             if a == 0:
