@@ -5,6 +5,7 @@ import math
 import os
 import random
 import time
+from typing import Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -477,21 +478,37 @@ class Sim:
             len(self.agents), self.gcsteps,
             time.strftime("%d%M%Y%H%M%S", time.localtime()))
 
-    def run(self, steps: int = 1000, print_freq: int = 10) -> None:
+    def run(self, steps: int = 1000, print_freq: int = None, max_attempts=1) -> Tuple[bool, int]:
         """
         Runs the mode
 
         Args:
+            max_attempts: The maximum amount of attempts the simulation should try before quiting, -1 is effectively infinity
             steps(int): The amount of steps to run the model
             print_freq(int): The frequency to print progress updates
 
         See also:
             :meth:`model2.Sim.step`
             :meth:`model2.Sim.update_stats`
+
+        Returns:
+            (tuple): tuple containing:
+                (bool: If the simulation was successful
+                (int): Amount of times the simulation failed
         """
-        for i in range(steps):
-            self.step()  # update all the agents
-            self.update_stats(steps, i, print_freq)
+        if max_attempts == -1:
+            max_attempts = 2 ** 32
+        sim_copy = copy.deepcopy(self)
+        if print_freq is None:
+            print_freq = steps / 100
+        for a in range(max_attempts):
+            for i in range(steps):
+                if not self.step():
+                    self.__dict__.update(sim_copy.__dict__)  # resetting the sim to its original state
+                    break
+                self.update_stats(steps, i, print_freq)
+            return True, a
+        return False, max_attempts
 
     def update_stats(self, steps: int, csteps: int, print_freq: int) -> None:
         """
@@ -534,7 +551,7 @@ class Sim:
         Create food
         """
         self.food = []
-        for i in range(self.food_count):
+        for i in range(int((1 - FOOD_FLUCT) * self.food_count)):
             self.food.append(Food(random.uniform(-1, 1)))
 
     def step(self) -> bool:
@@ -547,7 +564,9 @@ class Sim:
         if len(self.food) < FOOD_FLUCT * self.food_count:
             self.cfood()
 
-        if len(self.agents) <= 1 or len(self.food) == 0:
+        if len(self.agents) <= 1:
+            print("ALERT: the model has died")
+
             return False
         self.agents.sort(
             key=lambda ag: ag.x
@@ -581,7 +600,8 @@ class Sim:
                     print("Length of food list is " + str(len(self.food)))
                     print("The food index at the start of the search was " + str(tmp_fi))
                     print("\n\n debug: ")
-                    print(debug)
+                    for p in debug:
+                        print(p)
                     exit(-1)
 
             if tf is None:
