@@ -550,27 +550,25 @@ class Sim:
         if len(self.agents) <= 1 or len(self.food) == 0:
             return False
         self.agents.sort(
-            key=lambda a: a.x
+            key=lambda ag: ag.x
         )  # sort agents by position, allows to quickly determine closest agent with low complexity
-        self.food.sort(key=lambda a: a.x)
+        self.food.sort(key=lambda ag: ag.x)
         food_index = 0
         for a in range(len(self.agents)):
-            if (a >= len(self.agents)
-            ):  # agents can be removed but the range isn't updated
+            if a >= len(self.agents):  # agents can be removed but the range isn't updated
                 return True
 
             ax = self.agents[a].x
 
             tf = None
             lf = None
-            if food_index < len(self.food)-1:
-                for i in range(food_index, len(self.food)):
-                    if self.food[i].x > ax:
-                        food_index = i - 1
-                        tf = self.food[i]
-                        break
-                    else:
-                        lf = self.food[i]
+            for i in range(food_index, len(self.food)):
+                if self.food[i].x > ax:
+                    food_index = i - 1
+                    tf = self.food[i]
+                    break
+                else:
+                    lf = self.food[i]
 
             if tf is None:
                 tf = self.food[0]
@@ -588,7 +586,7 @@ class Sim:
                 self.food.pop(food_index - 1 if dtf < dlf else food_index - 2)  # remove food
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
-                food_index -= 1
+                food_index -= 2
 
             # because agents have been sorted by x values, it is easy to find the closest agent by comparing the agent before and the one after
             if a == 0:
