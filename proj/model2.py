@@ -12,8 +12,10 @@ import numpy as np
 from matplotlib import animation
 from nn import NeuralNetwork
 
-from PIL import Image
+from PIL import Image  # work with metadata via pillow
 from PIL import PngImagePlugin
+
+import openpyxl  # work with excell
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
 config.read('config.ini')
@@ -502,12 +504,15 @@ class Sim:
         if print_freq is None:
             print_freq = steps / 100
         for a in range(max_attempts):
+            failed = False
             for i in range(steps):
                 if not self.step():
-                    self.__dict__.update(sim_copy.__dict__)  # resetting the sim to its original state
+                    self.__dict__.update(copy.deepcopy(sim_copy).__dict__)  # resetting the sim to its original state
+                    failed = True
                     break
                 self.update_stats(steps, i, print_freq)
-            return True, a
+            if not failed:
+                return True, a
         return False, max_attempts
 
     def update_stats(self, steps: int, csteps: int, print_freq: int) -> None:
@@ -566,7 +571,6 @@ class Sim:
 
         if len(self.agents) <= 1:
             print("ALERT: the model has died")
-
             return False
         self.agents.sort(
             key=lambda ag: ag.x
@@ -701,14 +705,14 @@ class Sim:
 
     def graph(self, save: bool = True, info: str = None) -> str:
         """
-        Graph the recorded statistics
+        Graph the recorded statistics in a plt plot, as well as in an excel spreadsheet (if save is true)
 
         Args:
-            save(bool): Save the graph file
+            save(bool): Save the graph + excel files
             info(str): Additional notes. If None is passed the function will ask via input so if you don't want info, pass an empty string.
 
         Returns:
-            str: Graph file name
+            str: file name without extention
         """
         if info is None:
             info = input("Enter additional information about the sim: ")
@@ -716,7 +720,7 @@ class Sim:
         titles = [
             "Number Of Agents", "Average Agent Mass",
             "Amount of Food Consumed", "Average Agent IQ", "Average Agent EQ",
-            "Average breeding mass divider", "Average Agent Breed Mass", "Fight count relative to population size",
+            "Average breeding mass divider", "Average Agent Breed Chance", "Fight count relative to population size",
             "Help count relative to population size", "Ignore count relative to population size"
         ]
 
@@ -749,15 +753,45 @@ class Sim:
         plt.autoscale()
 
         if (save):
-            fn = "graphs-0.3/" + self.get_fn() + "." + extention
-            fig.savefig(fn, bbox_inches='tight')  # save graph
+            fn = "graphs-0.3/" + self.get_fn()
+
+            wb = openpyxl.Workbook()
+            sheet = wb.active
+            sheet["A1"] = 'Amount of steps:'
+            sheet["B1"] = self.gcsteps
+
+            sheet.append([])
+
+            sheet.append(["X:"])
+            sheet.append(self.i_OT)
+
+            xvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=4, max_col=self.gcsteps)
+
+            for i in range(len(values)):
+                sheet.append([titles[i]])
+                sheet.append(values[i])
+
+                chart = openpyxl.chart.ScatterChart()
+                chart.title = titles[i] + " V.S number of steps"
+                chart.style = 13
+                chart.x_axis.title = 'Number of steps'
+                chart.y_axis.title = titles[i]
+
+                yvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=sheet._current_row, max_col=len(values[i]))
+                series = openpyxl.chart.Series(yvalues, xvalues)
+                chart.series.append(series)
+
+                sheet.add_chart(chart)
+
+            wb.save(fn + ".xlsx")
+            pltfn = fn + "." + extention
+            fig.savefig(pltfn, bbox_inches='tight')  # save graph
             # add metadata:
-            im = Image.open(fn)
+            im = Image.open(pltfn)
             meta = PngImagePlugin.PngInfo()
             for x in metadata:
                 meta.add_text(x, str(metadata[x]))
-            im.save(fn, extention, pnginfo=meta)
-            self.fileName = fn
+            im.save(pltfn, extention, pnginfo=meta)
             return fn
 
         plt.show()  # display graph
@@ -777,7 +811,7 @@ class Sim:
             str: The filename of the animation
 
         Danger:
-            This is highly Ram Intensive. If you plan on doing more than the simplest animation you will need either extremely high ram capacity.
+            This is highly Ram Intensive. If you plan on doing more than the simplest animation you will need either extremely high ram capacity, or the animation will crash/use the windows page file
         """
         ims = []
         fig = plt.figure(figsize=(res_mult, res_mult))
