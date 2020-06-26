@@ -18,8 +18,8 @@ from PIL import PngImagePlugin
 import openpyxl  # work with excell
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
-# config.read('config.ini')
-config.read('C:\\Users\\Student\\Documents\\EcoSystemProject\\proj\\config.ini');
+config.read('config.ini')
+# config.read('C:\\Users\\Student\\Documents\\EcoSystemProject\\proj\\config.ini');
 
 INT_CONST = float(config["VARIABLES"]["INT_CONST"])
 MOV_CONST = float(config["VARIABLES"]["MOV_CONST"])
