@@ -762,7 +762,6 @@ class Sim:
             sheet.append([self.gcsteps])
             sheet.append([])
             sheet.append(["X:"])
-            sheet.append(self.i_OT)
             safe_append(sheet, self.i_OT)
             sheet.append([])
 
