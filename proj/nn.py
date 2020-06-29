@@ -84,7 +84,7 @@ class NNLayer:
                     self.prev_nodes, len(xs)))
         return s(xp.add(xp.matmul(xp.array(xs), self.weights), self.bias))
 
-    def mutate(self):
+    def mutate(self) -> None:
         """
         Mutates the layer
         """
@@ -146,7 +146,7 @@ class NeuralNetwork:
                     for l in self.layers]).replace("\\n",
                                                    "").replace(",", "\n")
 
-    def mutate(self):
+    def mutate(self) -> None:
         """
         Mutate all the layers of the neural network
         """

@@ -5,7 +5,7 @@ import math
 import os
 import random
 import time
-from typing import Tuple
+from typing import Tuple, List
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -48,7 +48,7 @@ MAX_EQ = float(config["VARIABLES"]["MAX_EQ"])
 FOOD_FLUCT = float(config["VARIABLES"]["FOOD_FLUCT"])
 
 
-def map_from_to(x, a, b, c, d):
+def map_from_to(x: float, a: float, b: float, c: float, d: float) -> float:
     """
     Map a value to a new range
 
@@ -174,7 +174,7 @@ class Agent:
 
         self.size_factor = size_factor
 
-    def age(self):
+    def age(self) -> None:
         """
         Make the agent experience aging
 
@@ -226,7 +226,7 @@ class Agent:
             self.x = -self.x - 1
         self.energy -= MOV_CONST * dx
 
-    def breed(self, nid: int):
+    def breed(self, nid: int) -> 'Agent':
         """
         Make the agent have a child.
         Note that the child's mass is removed from the agent's mass on childbirth
@@ -272,7 +272,7 @@ class Agent:
         else:
             self.energy += food
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.id)
 
 
@@ -552,7 +552,7 @@ class Sim:
         self.fight = 0
         self.nothing = 0
 
-    def cfood(self):
+    def cfood(self) -> None:
         """
         Create food
         """
@@ -763,11 +763,12 @@ class Sim:
             sheet.append([])
             sheet.append(["X:"])
             sheet.append(self.i_OT)
+            safe_append(sheet, self.i_OT)
             sheet.append([])
 
             for i in range(len(values)):
                 sheet.append([titles[i]])
-                sheet.append(values[i])
+                safe_append(sheet, values[i])
                 sheet.append([])
 
             wb.save(fn + ".xlsx")
@@ -781,91 +782,95 @@ class Sim:
             im.save(pltfn, extention, pnginfo=meta)
             return fn
 
+    def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10) -> str:
+        """
+        Creates an animated model of the simulation
 
-def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10):
-    """
-    Creates an animated model of the simulation
+        Args:
+            steps(int): The number of steps to animate
+            res_mult: The size of each frame (plt figure size)
+            fps(int): The animation's FPS (frames per second)
+            bitrate(int): The animation's bitrate (higher -> less compression)
+            print_freq(int): How frequently to print progress updates
 
-    Args:
-        steps(int): The number of steps to animate
-        res_mult: The size of each frame (plt figure size)
-        fps(int): The animation's FPS (frames per second)
-        bitrate(int): The animation's bitrate (higher -> less compression)
-        print_freq(int): How frequently to print progress updates
+        Returns:
+            str: The filename of the animation
 
-    Returns:
-        str: The filename of the animation
+        Danger:
+            This is highly Ram Intensive. If you plan on doing more than the simplest animation you will need either extremely high ram capacity, or the animation will crash/use the windows page file
+        """
+        ims = []
+        fig = plt.figure(figsize=(res_mult, res_mult))
+        for i in range(steps):
+            if not self.step():
+                return False
+            self.update_stats(steps, i, print_freq)
+            acu = self.size_factor / 25
+            row = [0 for i in np.arange(0, 1, acu)]
+            for f in self.food:
+                try:
+                    row[round(f.x / acu)] = 100
+                except:
+                    if round(f.x / acu) > 1 / acu:
+                        row[-1] = 100
+                    else:
+                        row[0] = 100
+            for a in self.agents:
+                try:
+                    row[round(a.x / acu)] = 255
+                except:
+                    if round(a.x / acu) > 1 / acu:
+                        row[-1] = 255
+                    else:
+                        row[0] = 255
 
-    Danger:
-        This is highly Ram Intensive. If you plan on doing more than the simplest animation you will need either extremely high ram capacity, or the animation will crash/use the windows page file
-    """
-    ims = []
-    fig = plt.figure(figsize=(res_mult, res_mult))
-    for i in range(steps):
-        if not self.step():
-            return False
-        self.update_stats(steps, i, print_freq)
-        acu = self.size_factor / 25
-        row = [0 for i in np.arange(0, 1, acu)]
-        for f in self.food:
-            try:
-                row[round(f.x / acu)] = 100
-            except:
-                if round(f.x / acu) > 1 / acu:
-                    row[-1] = 100
-                else:
-                    row[0] = 100
-        for a in self.agents:
-            try:
-                row[round(a.x / acu)] = 255
-            except:
-                if round(a.x / acu) > 1 / acu:
-                    row[-1] = 255
-                else:
-                    row[0] = 255
+            r = len(row) / (2 * math.pi)
 
-        r = len(row) / (2 * math.pi)
+            p = np.zeros((math.ceil(2 * r) + 10, math.ceil(2 * r) + 10))
 
-        p = np.zeros((math.ceil(2 * r) + 10, math.ceil(2 * r) + 10))
+            dist_proj = 2 * math.pi / len(row)
+            angle = 0
+            for v in row:
+                x = round(r * math.cos(angle) + r)
+                y = round(r * math.sin(angle) + r)
+                p[y][x] = v
+                p[y + 1][x] = v
+                p[y - 1][x] = v
+                p[y][x + 1] = v
+                p[y][x - 1] = v
+                angle += dist_proj
 
-        dist_proj = 2 * math.pi / len(row)
-        angle = 0
-        for v in row:
-            x = round(r * math.cos(angle) + r)
-            y = round(r * math.sin(angle) + r)
-            p[y][x] = v
-            p[y + 1][x] = v
-            p[y - 1][x] = v
-            p[y][x + 1] = v
-            p[y][x - 1] = v
-            angle += dist_proj
+            ims.append([
+                plt.imshow(p,
+                           interpolation='nearest',
+                           aspect='auto')
+            ])
+            p = None
+            row = None
+            gc.collect()
 
-        ims.append([
-            plt.imshow(p,
-                       interpolation='nearest',
-                       aspect='auto')
-        ])
-        p = None
-        row = None
+        ani = animation.ArtistAnimation(fig,
+                                        ims,
+                                        interval=100,
+                                        blit=False,
+                                        repeat_delay=1000)
+
+        # Set up formatting for the movie files
+        Writer = animation.writers['ffmpeg']
+        writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=bitrate)
+
+        ani.save("animations-0.1/" + self.get_fn() + '.mp4', writer=writer)
+        # optimize:
+        # de-enitialize varibles:
+        fig = None
+        ims = None
+        ani = None
+        # call garbage colector:
         gc.collect()
+        # return animation file name
+        return "animations-0.1/" + self.get_fn() + '.mp4'
 
-    ani = animation.ArtistAnimation(fig,
-                                    ims,
-                                    interval=100,
-                                    blit=False,
-                                    repeat_delay=1000)
 
-    # Set up formatting for the movie files
-    Writer = animation.writers['ffmpeg']
-    writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=bitrate)
-
-    ani.save("animations-0.1/" + self.get_fn() + '.mp4', writer=writer)
-    # optimize:
-    # de-enitialize varibles:
-    fig = None
-    ims = None
-    ani = None
-    # call garbage colector:
-    gc.collect()
-    # return animation file name
-    return "animations-0.1/" + self.get_fn() + '.mp4'
+def safe_append(ws: openpyxl.worksheet, data: List[float]) -> None:
+    for i in range(0, len(data), 18278):
+        ws.append(data[i:i + 18278])
