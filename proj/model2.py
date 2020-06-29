@@ -268,6 +268,7 @@ class Agent:
         """
         if self.mass < self.final_mass and self.energy / self.mass > ENGB_CONST:
             self.mass += food
+            self.speed = (1 / self.mass) * self.size_factor * G_SPEED_FACTOR
         else:
             self.energy += food
 
@@ -765,23 +766,29 @@ class Sim:
             sheet.append(["X:"])
             sheet.append(self.i_OT)
 
-            xvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=4, max_col=self.gcsteps)
+            try:
+                xvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=4, max_col=self.gcsteps)
+            except:
+                print("unable to create graphs")
 
             for i in range(len(values)):
                 sheet.append([titles[i]])
                 sheet.append(values[i])
 
-                chart = openpyxl.chart.ScatterChart()
-                chart.title = titles[i] + " V.S number of steps"
-                chart.style = 13
-                chart.x_axis.title = 'Number of steps'
-                chart.y_axis.title = titles[i]
+                try:
+                    chart = openpyxl.chart.ScatterChart()
+                    chart.title = titles[i] + " V.S number of steps"
+                    chart.style = 13
+                    chart.x_axis.title = 'Number of steps'
+                    chart.y_axis.title = titles[i]
 
-                yvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=sheet._current_row, max_col=len(values[i]))
-                series = openpyxl.chart.Series(yvalues, xvalues)
-                chart.series.append(series)
+                    yvalues = openpyxl.chart.Reference(sheet, min_col=1, min_row=sheet._current_row, max_col=len(values[i]))
+                    series = openpyxl.chart.Series(yvalues, xvalues)
+                    chart.series.append(series)
 
-                sheet.add_chart(chart)
+                    sheet.add_chart(chart)
+                except:
+                    print("unable to create graphs")
 
             wb.save(fn + ".xlsx")
             pltfn = fn + "." + extention
