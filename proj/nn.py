@@ -16,7 +16,7 @@ else:
 var = numpy.ndarray
 
 
-def s(a: numpy.ndarray) -> numpy.ndarray:
+def sigmoid(a: numpy.ndarray) -> numpy.ndarray:
     """
     Sigmoid Function
 
@@ -29,7 +29,7 @@ def s(a: numpy.ndarray) -> numpy.ndarray:
     return 1 / (1 + xp.exp(-a))
 
 
-def m(a: numpy.ndarray) -> numpy.ndarray:
+def mutate(a: numpy.ndarray) -> numpy.ndarray:
     """
     Mutate Function
 
@@ -82,14 +82,14 @@ class NNLayer:
             raise Exception(
                 "error, wrong input size, expected {} got {}".format(
                     self.prev_nodes, len(xs)))
-        return s(xp.add(xp.matmul(xp.array(xs), self.weights), self.bias))
+        return sigmoid(xp.add(xp.matmul(xp.array(xs), self.weights), self.bias))
 
     def mutate(self) -> None:
         """
         Mutates the layer
         """
-        self.weights = m(self.weights)
-        self.bias = m(self.bias)
+        self.weights = mutate(self.weights)
+        self.bias = mutate(self.bias)
 
     def __repr__(self) -> str:
         return "weights: {} bias: {}".format(self.weights, self.bias)

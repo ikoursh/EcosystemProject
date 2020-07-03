@@ -68,6 +68,7 @@ def map_from_to(x: float, a: float, b: float, c: float, d: float) -> float:
     return (x - a) / (b - a) * (d - c) + c
 
 
+# create folders for model outputs
 GRAPHS_FOLDER = "/graphs-0.3"
 ANIMATION_FOLDER = '/animations-0.1'
 if not os.path.isdir('.' + GRAPHS_FOLDER):
@@ -78,18 +79,18 @@ if not os.path.isdir('.' + ANIMATION_FOLDER):
 
 class Agent:
     """
-    An class that models the behavior of wild creatures.
+    A class that models the behavior of wild creatures.
 
 
     Args:
         x (float): The agents initial position. See :attr:`model2.Agent.x`
         id(int): An id used by the simulation class to keep track of agents. See :attr:`model2.Agent.id`
 
-        iq (int): The amount of neurons in every hidden layer of the agent's neural network that is responsible for movement. See :attr:`model2.Agent.iq`
+        iq (int): The number of neurons in every hidden layer of the agent's neural network that is responsible for movement. See :attr:`model2.Agent.iq`
 
-        eq (int): The amount of neurons in every hidden layer of the agent's neural network that is responsible for agent to agent interactions. See :attr:`model2.Agent.eq`
+        eq (int): The number of neurons in every hidden layer of the agent's neural network that is responsible for agent to agent interactions. See :attr:`model2.Agent.eq`
 
-        mass(int): The mass of the agent represents it's size. See :attr:`model2.Agent.mass`
+        mass(int): The mass of the agent represents its size. See :attr:`model2.Agent.mass`
         final_mass(int): The final mass of the agent. See :attr:`model2.Agent.final_mass`
 
         breed_mass_div(float): The initial mass to final mass ratio of the agents children. See :attr:`model2.Agent.breed_mass_div`
@@ -103,7 +104,7 @@ class Agent:
         parent_id(int): This variable is used to detect close family by the simulation. It is then used as a variable in agent interactions. See :attr:`model2.Agent.parent_id`
 
     Attributes:
-        energy(float): Tracks the amount energy an agent has. energy is acquired by eating, and lost by moving or thinking. Energy allows agents to grow and regenerate health. If an agent has low energy, he will take damage. See :meth:`model2.Agent.think`, :meth:`model2.Agent.move`, :meth:`model2.interact`
+        energy(float): Tracks the amount of energy an agent has. energy is acquired by eating and lost by moving or thinking. Energy allows agents to grow and regenerate health. If an agent has low energy, he will take damage. See :meth:`model2.Agent.think`, :meth:`model2.Agent.move`, :meth:`model2.interact`
 
         speed(float): The maximum velocity at which the creature can move. Inversely related to mass (1/mass)
         health(float): How much damage can a creature sustain. When it reaches 0, the creature dies.
@@ -112,14 +113,14 @@ class Agent:
 
         id(int): An id used by the simulation class to keep track of agents. See :attr:`model2.Agent.parent_id` for use case.
 
-        iq (int): The amount of neurons in every hidden layer of the agent's neural network that is responsible for movement. See :attr:`model2.Agent.move_brain` for use case.
+        iq (int): The number of neurons in every hidden layer of the agent's neural network that is responsible for movement. See :attr:`model2.Agent.move_brain` for use case.
 
-        eq (int): The amount of neurons in every hidden layer of the agent's neural network that is responsible for agent to agent interactions. See :attr:`model2.Agent.social_brain` for use case
+        eq (int): The number of neurons in every hidden layer of the agent's neural network that is responsible for agent to agent interactions. See :attr:`model2.Agent.social_brain` for use case
 
-        mass(int): The mass of the agent, represents it's size.
+        mass(int): The mass of the agent, represents its size.
         final_mass(int): The final mass of the agent.
 
-        breed_mass_div(float): The initial mass to final mass ratio of the agents children. See :meth:`model2.Agent.breed`.
+        breed_mass_div(float): The initial mass to final mass ratio of the agent's children. See :meth:`model2.Agent.breed`.
         breed_chance(float): The chance for the agent to breed at every step. See :meth:`model2.Agent.breed`
 
         size_factor(float): A variable used by the sim's movement and collision engines to control the size of the simulation. See :attr:`model2.Sim.size_factor`
@@ -150,12 +151,18 @@ class Agent:
         if move_brain is not None:
             self.move_brain = move_brain
         else:
-            self.move_brain = NeuralNetwork([3, iq, iq, 1])
+            if iq == 1:  # if the size of the hidden layers is 1, the amount of hidden layers doesn't matter
+                self.move_brain = NeuralNetwork([3, 1])
+            else:
+                self.move_brain = NeuralNetwork([3, iq, iq, 1])
 
         if social_brain is not None:
             self.social_brain = social_brain
         else:
-            self.social_brain = NeuralNetwork([4, eq, eq, 2])
+            if eq == 1:  # if the size of the hidden layers is 1, the amount of hidden layers doesn't matter
+                self.social_brain = NeuralNetwork([4, eq, 2])
+            else:
+                self.social_brain = NeuralNetwork([4, eq, eq, 2])
 
         self.parent_id = parent_id
 
@@ -240,7 +247,7 @@ class Agent:
             nid(int): The id of the new child
 
         Returns:
-            Agent: A child that is a mutated version of the agent
+            Agent: A child that is a mutated version of the agent, None if the agent died in childbirth
         """
         nb = copy.deepcopy(self.move_brain)
         nb.mutate()
@@ -261,13 +268,13 @@ class Agent:
 
     def eat(self, food: int) -> None:
         """
-        Make the agent eat, increases agent energy (:attr:`model2.Agent.energy`) and mass (:attr:`model2.Agent.mass`) if the agent has not reached it's final mass and has energy to spare
+        Make the agent eat, increases agent energy (:attr:`model2.Agent.energy`) and mass (:attr:`model2.Agent.mass`) if the agent has not reached its final mass and has energy to spare
 
         Args:
             food(int): The amount of food the agent should eat
         """
         if self.mass < self.final_mass and self.energy / self.mass > ENGB_CONST:
-            self.mass += food
+            self.mass += food  # update mass and speed
             self.speed = (1 / self.mass) * self.size_factor * G_SPEED_FACTOR
         else:
             self.energy += food
@@ -307,7 +314,7 @@ def interact(a1: Agent, a2: Agent, s) -> None:
         a2(Agent): Agent 2
         s(Sim): The simulation that is requesting the interaction (used to update statistics)
     """
-    a1.energy -= a1.eq * INT_CONST
+    a1.energy -= a1.eq * INT_CONST  # subtract energy used for interaction thought
     a2.energy -= a2.eq * INT_CONST
     close_family = a1.parent_id == a2.id or a2.parent_id == a1.id
     s1 = a1.social_brain.feed_forward(
@@ -315,10 +322,10 @@ def interact(a1: Agent, a2: Agent, s) -> None:
     s2 = a2.social_brain.feed_forward(
         [1 if close_family else 0, a2.energy / a2.mass, a1.energy / a1.mass, 1 if a1.mass < a2.mass else 0])
 
-    if s1[0] > 0.5 or s2[0] > 0.5:
+    if s1[0] > 0.5 or s2[0] > 0.5:  # if either agent wants to fight
         fight(a1, a2)
         s.fight += 1
-    if s1[1] > 0.5:
+    if s1[1] > 0.5:  # if an agent wants to help
         a1.energy -= FOOD_CONST
         a2.energy += FOOD_CONST
         s.help += 1
@@ -355,9 +362,9 @@ def mk_round(d: float) -> float:
     Returns:
         float: The processed distance
     """
-    if d > 1:
+    if d > 1:  # if the distance between them is greater than 1, then the other distance must be smaller Ex. 1.2 -> -0.8
         return d - 2
-    if d < -1:
+    if d < -1:  # if the distance between them is smaller than -1, then the other distance must be smaller Ex. -1.2 -> 0.8
         return -d - 1
     else:
         return d
@@ -384,7 +391,7 @@ class Sim:
         help(int): The number of times agents help one another in total
         nothing(int): The number of times agents ignore one another in total
 
-        id(int): A variable used to keep tracked of the issued id's to agents. See :attr:`model2.Agent.id`
+        id(int): A variable used to keep track of the issued id's to agents. See :attr:`model2.Agent.id`
 
         eat(int): The number of times agents ate in the last step
 
@@ -404,8 +411,8 @@ class Sim:
         breed_chance_OT(list[float]): A list of the average breeding chase of agents over time. See :attr:`model2.Agent.breed_chance`
 
         fight_OT(list[int]): A list of the amount of fighting over time. See :meth:`model2.fight`, :meth:`model2.interact`
-        help_OT(list[int]): A list of the amount of creatures helping one another over time. See :meth:`model2.interact`
-        nothing_OT(list[int]): A list of the amount of creatures ignoring one another over time. See :meth:`model2.interact`
+        help_OT(list[int]): A list of the number of creatures helping one another over time. See :meth:`model2.interact`
+        nothing_OT(list[int]): A list of the number of creatures ignoring one another over time. See :meth:`model2.interact`
 
     Raises:
         TypeError: If agents or food_count aren't integers
@@ -437,7 +444,7 @@ class Sim:
         self.agents = []
         self.food = []
         self.gcsteps = 0
-        for i in range(agents):  # create agents
+        for i in range(agents):  # create initial population
             mass = math.ceil(random.randrange(1, 100))
             self.agents.append(
                 Agent(int(random.randrange(MIN_IQ,
@@ -446,6 +453,8 @@ class Sim:
                       random.uniform(-1, 1), self.id, mass, random.random(), random.random(), self.size_factor))
             self.id += 1
 
+        # create statistic helpers
+        self.group()
         self.i_OT = []
 
         self.number_of_agents_OT = []
@@ -462,6 +471,8 @@ class Sim:
         self.help_OT = []
         self.nothing_OT = []
 
+        self.relative_groups_OT = []
+        self.close_family_in_group_OT = []
         self.cfood()
 
         return
@@ -471,7 +482,7 @@ class Sim:
         A helper function that generates a file name for the graph/animation
 
         Returns:
-            str: A unique file name
+            str: A unique filename
 
         See Also:
             :meth:`model2.Sim.graph`
@@ -486,8 +497,8 @@ class Sim:
         Runs the mode
 
         Args:
-            max_attempts: The maximum amount of attempts the simulation should try before quiting, -1 is effectively infinity
-            steps(int): The amount of steps to run the model
+            max_attempts: The maximum amount of attempts the simulation should try before quitting, -1 is effectively infinity
+            steps(int): The number of steps to run the model
             print_freq(int): The frequency to print progress updates
 
         See also:
@@ -499,54 +510,103 @@ class Sim:
                 (bool: If the simulation was successful
                 (int): Amount of times the simulation failed
         """
-        if max_attempts == -1:
+        if max_attempts == -1:  # if maximum atempts is -1, make it effectively infinite
             max_attempts = 2 ** 32
-        sim_copy = copy.deepcopy(self)
-        if print_freq is None:
+
+        sim_copy = copy.deepcopy(self)  # create a copy of the sim to use as a restore point
+
+        if print_freq is None:  # if print frequency is not specified, set it so that the model prints every 1% of steps
             print_freq = steps / 100
         for a in range(max_attempts):
             failed = False
             for i in range(steps):
-                if not self.step():
+                if not self.step():  # call step, if it failed, stop this attempt
                     self.__dict__.update(copy.deepcopy(sim_copy).__dict__)  # resetting the sim to its original state
                     failed = True
                     break
-                self.update_stats(steps, i, print_freq)
+                self.update_stats(steps, i, print_freq)  # update statistics
             if not failed:
                 return True, a
         return False, max_attempts
+
+    def group(self) -> int:
+        """
+        Group agents via position
+        Returns:
+            number of groups
+        """
+        prev_a = self.agents[0]
+        prev_a.group = 0
+        for a in self.agents:
+            a.group = prev_a.group + 0 if a.x - prev_a.x < 10 * self.col_const else 1
+            prev_a = a
+        return prev_a.group
 
     def update_stats(self, steps: int, csteps: int, print_freq: int) -> None:
         """
         Update model statistics and print progress updates if necessary
 
         Args:
-            steps(int): How many steps are their in total
+            steps(int): How many steps are there in total
             csteps(int): The current step number
             print_freq(int): How often to print progress updates
         """
+        agent_count = len(self.agents)  # save time
         self.gcsteps += 1
         if csteps % print_freq == 0:
             print(
                 "{}% ({} of {}) current population size: {} amount of food: {}".
                     format(round((csteps / steps) * 100, 2), csteps, steps,
-                           len(self.agents), len(self.food)))  # print status
+                           agent_count, len(self.food)))  # print status
         # append statistics:
         self.i_OT.append(self.gcsteps)
-        self.number_of_agents_OT.append(len(self.agents))
-        self.mass_OT.append(np.mean([a.mass for a in self.agents]))
+        self.number_of_agents_OT.append(agent_count)
+
+        # group based statistics:
+        self.relative_groups_OT.append(self.group() / float(agent_count))
+
+        # in order to reduce compute time all for data collection will occour once
+
+        helper_mass = []
+        helper_iq = []
+        helper_eq = []
+        helper_bmd = []
+        helper_bch = []
+        helper_group_i = -1
+        helper_group_size = []
+        helper_close_family_group = []
+
+        for a in self.agents:
+            helper_mass.append(a.mass)
+            helper_iq.append(a.iq)
+            helper_eq.append(a.eq)
+            helper_bmd.append(a.breed_mass_div)
+            helper_bch.append(a.breed_chance)
+            if a.group != helper_group_i:
+                a.group = helper_group_i
+                helper_close_family_group.append([])
+                helper_group_size.append(0)
+                helper_group_i+=1
+
+            helper_close_family_group[helper_group_i].extend([a.id, a.parent_id])
+            helper_group_size[helper_group_i] += 1
+
+        self.close_family_in_group_OT.append(np.mean(
+            [(len(helper_close_family_group[i]) - len(set(helper_close_family_group[i]))) / helper_group_size[i] for i in
+             range(helper_group_i)]))  # the average amount of duplicates is the amount of close family
+        self.mass_OT.append(np.mean(helper_mass))
         self.eat_OT.append(self.eat)
         self.eat = 0
-        self.iq_OT.append(np.mean([a.iq for a in self.agents]))
-        self.eq_OT.append(np.mean([a.eq for a in self.agents]))
+        self.iq_OT.append(np.mean(helper_iq))
+        self.eq_OT.append(np.mean(helper_eq))
         self.breed_mass_div_OT.append(
-            np.mean([a.breed_mass_div for a in self.agents]))
+            np.mean(helper_bmd))
         self.breed_chance_OT.append(
             np.mean([a.breed_chance for a in self.agents]))
 
-        self.fight_OT.append(self.fight / len(self.agents))
-        self.help_OT.append(self.help / len(self.agents))
-        self.nothing_OT.append(self.nothing / len(self.agents))
+        self.fight_OT.append(self.fight / agent_count)
+        self.help_OT.append(self.help / agent_count)
+        self.nothing_OT.append(self.nothing / agent_count)
 
         self.help = 0
         self.fight = 0
@@ -575,9 +635,9 @@ class Sim:
             return False
         self.agents.sort(
             key=lambda ag: ag.x
-        )  # sort agents by position, allows to quickly determine closest agent with low complexity
+        )  # sort agents by position, allows to quickly determine the closest agent with low complexity
         self.food.sort(key=lambda ag: ag.x)
-        food_index = 0
+        food_index = 0  # used to find closest food item with low complexity
         debug = []
         for a in range(len(self.agents)):
             if a >= len(self.agents):  # agents can be removed but the range isn't updated
@@ -587,7 +647,7 @@ class Sim:
 
             tf = None
             lf = None
-            tmp_fi = food_index
+            tmp_fi = food_index  # crete debug data
             debug_line = "food length: " + str(len(self.food)) + " start search index: " + str(food_index)
             for i in range(food_index, len(self.food)):
                 try:
@@ -598,7 +658,7 @@ class Sim:
                         break
                     else:
                         lf = self.food[i]
-                except:
+                except:  # print debud data
                     print("there was an unexpected crash")
                     print("Agent number " + str(a) + " out of " + str(len(self.agents)))
                     print("Food index at crash was " + str(i))
@@ -622,7 +682,6 @@ class Sim:
             if abs(
                     dfood
             ) < self.col_const:  # if the abs distance is smaller than the required collision const
-                # self.food.pop(food_index-1 if dtf < dlf else food_index-2)
                 self.food.remove(tf if dtf < dlf else lf)  # remove food
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
@@ -665,22 +724,22 @@ class Sim:
 
             self.agents[a].age()  # applying age effect
 
-            if self.agents[a].energy < ENLB_CONST * self.agents[a].mass:
+            if self.agents[a].energy < ENLB_CONST * self.agents[a].mass:  # if the agent is sick, lose health
                 self.agents[a].health -= ENL_CONST
 
-            if self.agents[a].energy > ENGB_CONST * self.agents[a].mass:
+            if self.agents[a].energy > ENGB_CONST * self.agents[a].mass:  # if the agent is healthy, gain health
                 self.agents[a].health += ENG_CONST
 
             if (random.random() < self.agents[a].breed_chance
                     and self.agents[a].health > 0
-                    and self.agents[a].mass >= self.agents[a].final_mass):
+                    and self.agents[a].mass >= self.agents[a].final_mass):  # determine if an agent will breed
                 nk = self.agents[a].breed(self.id)
-                if not nk is None:
+                if nk is not None:  # if the agent did not die in childbirth, append the newborn to the sim
                     self.breed += 1
                     self.id += 1
                     self.agents.append(nk)
 
-            if self.agents[a].health < -1e-5:
+            if self.agents[a].health < -1e-5:  # if the agent's health is <=0, kill it
                 self.kill += 1
                 self.agents.remove(self.agents[a])
         return True
@@ -713,7 +772,7 @@ class Sim:
             info(str): Additional notes. If None is passed the function will ask via input so if you don't want info, pass an empty string.
 
         Returns:
-            str: file name without extention
+            str: file name without extension
         """
         if info is None:
             info = input("Enter additional information about the sim: ")
@@ -722,12 +781,14 @@ class Sim:
             "Number Of Agents", "Average Agent Mass",
             "Amount of Food Consumed", "Average Agent IQ", "Average Agent EQ",
             "Average breeding mass divider", "Average Agent Breed Chance", "Fight count relative to population size",
-            "Help count relative to population size", "Ignore count relative to population size"
+            "Help count relative to population size", "Ignore count relative to population size",
+            "Amount of groups relative to population size", "Close family ration in group"
         ]
 
         values = [
             self.number_of_agents_OT, self.mass_OT, self.eat_OT, self.iq_OT, self.iq_OT,
-            self.breed_mass_div_OT, self.breed_chance_OT, self.fight_OT, self.help_OT, self.nothing_OT
+            self.breed_mass_div_OT, self.breed_chance_OT, self.fight_OT, self.help_OT, self.nothing_OT,
+            self.relative_groups_OT, self.close_family_in_group_OT
         ]
         if len(titles) != len(values):
             raise Exception("Error len of titles must match len of vars")
@@ -802,7 +863,7 @@ class Sim:
         fig = plt.figure(figsize=(res_mult, res_mult))
         for i in range(steps):
             if not self.step():
-                return False
+                return
             self.update_stats(steps, i, print_freq)
             acu = self.size_factor / 25
             row = [0 for i in np.arange(0, 1, acu)]
@@ -860,11 +921,11 @@ class Sim:
 
         ani.save("animations-0.1/" + self.get_fn() + '.mp4', writer=writer)
         # optimize:
-        # de-enitialize varibles:
+        # de-initialize variables:
         fig = None
         ims = None
         ani = None
-        # call garbage colector:
+        # call garbage collector:
         gc.collect()
         # return animation file name
         return "animations-0.1/" + self.get_fn() + '.mp4'
