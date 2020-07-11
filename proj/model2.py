@@ -7,7 +7,11 @@ import random
 import time
 from typing import Tuple, List
 
+import matplotlib
+
+matplotlib.get_backend()
 import matplotlib.pyplot as plt
+
 import numpy as np
 from matplotlib import animation
 from nn import NeuralNetwork
@@ -397,8 +401,9 @@ class Sim:
 
         food(list[Food]): A list of all the food items
         gcsteps(int): The number of total steps taken (if run/animate is used more than once)
+        dataPoints(int): The nummber of datapoints recorded
 
-        i_OT(list[int]): The x array for the model's graphs
+        i_OT(list[int]): The x array for the model's graphs - composed of datapoints over time
 
         number_of_agents_OT(list[int]): A list of the number of agents over time
         mass_OT(list[float]): A list of the average agent mass over time. See :attr:`model2.Agent.mass`
@@ -444,6 +449,7 @@ class Sim:
         self.agents = []
         self.food = []
         self.gcsteps = 0
+        self.dataPoints = 0
         for i in range(agents):  # create initial population
             mass = math.ceil(random.randrange(1, 100))
             self.agents.append(
@@ -492,7 +498,8 @@ class Sim:
             len(self.agents), self.gcsteps,
             time.strftime("%d%M%Y%H%M%S", time.localtime()))
 
-    def run(self, steps: int = 1000, print_freq: int = None, max_attempts=1) -> Tuple[bool, int]:
+    def run(self, steps: int = 1000, print_freq: int = None, max_attempts: int = 1, data_point_freq: int = 10) -> \
+            Tuple[bool, int]:
         """
         Runs the mode
 
@@ -500,6 +507,7 @@ class Sim:
             max_attempts: The maximum amount of attempts the simulation should try before quitting, -1 is effectively infinity
             steps(int): The number of steps to run the model
             print_freq(int): The frequency to print progress updates
+            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 18277.
 
         See also:
             :meth:`model2.Sim.step`
@@ -510,7 +518,7 @@ class Sim:
                 (bool: If the simulation was successful
                 (int): Amount of times the simulation failed
         """
-        if max_attempts == -1:  # if maximum atempts is -1, make it effectively infinite
+        if max_attempts == -1:  # if maximum attempts is -1, make it effectively infinite
             max_attempts = 2 ** 32
 
         sim_copy = copy.deepcopy(self)  # create a copy of the sim to use as a restore point
@@ -524,7 +532,10 @@ class Sim:
                     self.__dict__.update(copy.deepcopy(sim_copy).__dict__)  # resetting the sim to its original state
                     failed = True
                     break
-                self.update_stats(steps, i, print_freq)  # update statistics
+                if i % print_freq == 0:
+                    self.progress(steps, i)
+                if i % data_point_freq == 0:
+                    self.update_stats()  # update statistics
             if not failed:
                 return True, a
         return False, max_attempts
@@ -542,24 +553,30 @@ class Sim:
             prev_a = a
         return prev_a.group
 
-    def update_stats(self, steps: int, csteps: int, print_freq: int) -> None:
+    def progress(self, steps: int, csteps: int) -> None:
         """
-        Update model statistics and print progress updates if necessary
-
-        Args:
+        Print model progress
+         Args:
             steps(int): How many steps are there in total
             csteps(int): The current step number
-            print_freq(int): How often to print progress updates
+        """
+        print(
+            "{}% ({} of {}) current population size: {} amount of food: {}"
+                .format(round((csteps / steps) * 100, 2),
+                        csteps, steps,
+                        len(self.agents),
+                        len(self.food)))  # print status
+
+    def update_stats(self) -> None:
+        """
+        Update model statistics
         """
         agent_count = len(self.agents)  # save time
         self.gcsteps += 1
-        if csteps % print_freq == 0:
-            print(
-                "{}% ({} of {}) current population size: {} amount of food: {}".
-                    format(round((csteps / steps) * 100, 2), csteps, steps,
-                           agent_count, len(self.food)))  # print status
+        self.dataPoints += 1
+
         # append statistics:
-        self.i_OT.append(self.gcsteps)
+        self.i_OT.append(self.dataPoints)
         self.number_of_agents_OT.append(agent_count)
 
         # group based statistics:
@@ -586,13 +603,14 @@ class Sim:
                 a.group = helper_group_i
                 helper_close_family_group.append([])
                 helper_group_size.append(0)
-                helper_group_i+=1
+                helper_group_i += 1
 
             helper_close_family_group[helper_group_i].extend([a.id, a.parent_id])
             helper_group_size[helper_group_i] += 1
 
         self.close_family_in_group_OT.append(np.mean(
-            [(len(helper_close_family_group[i]) - len(set(helper_close_family_group[i]))) / helper_group_size[i] for i in
+            [(len(helper_close_family_group[i]) - len(set(helper_close_family_group[i]))) / helper_group_size[i] for i
+             in
              range(helper_group_i)]))  # the average amount of duplicates is the amount of close family
         self.mass_OT.append(np.mean(helper_mass))
         self.eat_OT.append(self.eat)
@@ -627,6 +645,7 @@ class Sim:
         Returns:
             bool: If all the agents in the model are dead
         """
+        self.gcsteps += 1
         if len(self.food) < FOOD_FLUCT * self.food_count:
             self.cfood()
 
@@ -802,7 +821,7 @@ class Sim:
 
             metadata["Final" + titles[i]] = values[i][-1]
 
-        axs[0].axes.set_xlim([0, self.gcsteps])
+        axs[0].axes.set_xlim([0, self.dataPoints])
         axs[0].set_title(
             "Simulation with {} initial agents and {} steps\nDate: {}\nNotes: {}\n\nStats:\n{}\n"
                 .format(len(self.agents), self.gcsteps, time.strftime("%D"), info,
@@ -817,21 +836,24 @@ class Sim:
             extention = "png"
             fn = "graphs-0.3/" + self.get_fn()
 
-            wb = openpyxl.Workbook(write_only=True)
-            sheet = wb.create_sheet()
-            sheet.append(["Amount of steps"])
-            sheet.append([self.gcsteps])
-            sheet.append([])
-            sheet.append(["X:"])
-            safe_append(sheet, self.i_OT)
-            sheet.append([])
-
-            for i in range(len(values)):
-                sheet.append([titles[i]])
-                safe_append(sheet, values[i])
+            if len(values[i]) > 18277:
+                print("to manny data points, skipping excel")
+            else:
+                wb = openpyxl.Workbook(write_only=True)
+                sheet = wb.create_sheet()
+                sheet.append(["Amount of steps"])
+                sheet.append([self.gcsteps])
+                sheet.append([])
+                sheet.append(["X:"])
+                sheet.append(self.i_OT)
                 sheet.append([])
 
-            wb.save(fn + ".xlsx")
+                for i in range(len(values)):
+                    sheet.append([titles[i]])
+                    sheet.append(values[i])
+                    sheet.append([])
+
+                wb.save(fn + ".xlsx")
             pltfn = fn + "." + extention
             fig.savefig(pltfn, bbox_inches='tight')  # save graph
             # add metadata:
@@ -842,7 +864,7 @@ class Sim:
             im.save(pltfn, extention, pnginfo=meta)
             return fn
 
-    def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10) -> str:
+    def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10, data_point_freq: int = 10) -> str:
         """
         Creates an animated model of the simulation
 
@@ -852,19 +874,24 @@ class Sim:
             fps(int): The animation's FPS (frames per second)
             bitrate(int): The animation's bitrate (higher -> less compression)
             print_freq(int): How frequently to print progress updates
+            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 18277.
 
         Returns:
             str: The filename of the animation
 
         Danger:
-            This is highly Ram Intensive. If you plan on doing more than the simplest animation you will need either extremely high ram capacity, or the animation will crash/use the windows page file
+            As of now this function has a memory leak. Until it is resolved you will need extremely high ram capacity
         """
+        #TODO: fix memory leak
         ims = []
         fig = plt.figure(figsize=(res_mult, res_mult))
         for i in range(steps):
             if not self.step():
                 return
-            self.update_stats(steps, i, print_freq)
+            if i % data_point_freq == 0:
+                self.update_stats()
+            if i % print_freq == 0:
+                self.progress(steps, i)
             acu = self.size_factor / 25
             row = [0 for i in np.arange(0, 1, acu)]
             for f in self.food:
@@ -905,8 +932,12 @@ class Sim:
                            interpolation='nearest',
                            aspect='auto')
             ])
+            acu = None
+            r = None
+            dist_proj = None
             p = None
             row = None
+            angle = None
             gc.collect()
 
         ani = animation.ArtistAnimation(fig,
@@ -919,18 +950,17 @@ class Sim:
         Writer = animation.writers['ffmpeg']
         writer = Writer(fps=fps, metadata=dict(artist='Me'), bitrate=bitrate)
 
-        ani.save("animations-0.1/" + self.get_fn() + '.mp4', writer=writer)
+        fn = "animations-0.1/" + self.get_fn() + '.mp4'
+        ani.save(fn, writer=writer)
+
         # optimize:
         # de-initialize variables:
         fig = None
         ims = None
         ani = None
+        writer = None
+        Writer = None
         # call garbage collector:
         gc.collect()
         # return animation file name
-        return "animations-0.1/" + self.get_fn() + '.mp4'
-
-
-def safe_append(ws: openpyxl.worksheet, data: List[float]) -> None:
-    for i in range(0, len(data), 18278):
-        ws.append(data[i:i + 18278])
+        return fn
