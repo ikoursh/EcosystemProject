@@ -507,7 +507,7 @@ class Sim:
             max_attempts: The maximum amount of attempts the simulation should try before quitting, -1 is effectively infinity
             steps(int): The number of steps to run the model
             print_freq(int): The frequency to print progress updates
-            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 18277.
+            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 16,383.
 
         See also:
             :meth:`model2.Sim.step`
@@ -836,7 +836,7 @@ class Sim:
             extention = "png"
             fn = "graphs-0.3/" + self.get_fn()
 
-            if len(values[i]) > 18277:
+            if len(values[0]) > 16383:
                 print("to manny data points, skipping excel")
             else:
                 wb = openpyxl.Workbook(write_only=True)
@@ -874,7 +874,7 @@ class Sim:
             fps(int): The animation's FPS (frames per second)
             bitrate(int): The animation's bitrate (higher -> less compression)
             print_freq(int): How frequently to print progress updates
-            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 18277.
+            data_point_freq: The frequency to update data points. Note: the maximum number of data points for excel is 16,383.
 
         Returns:
             str: The filename of the animation
