@@ -836,7 +836,7 @@ class Sim:
             extention = "png"
             fn = "graphs-0.3/" + self.get_fn()
 
-            if len(values[i]) > 18277:
+            if len(values[0]) > 18277:
                 print("to manny data points, skipping excel")
             else:
                 wb = openpyxl.Workbook(write_only=True)
