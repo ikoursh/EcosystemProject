@@ -576,7 +576,7 @@ class Sim:
         self.dataPoints += 1
 
         # append statistics:
-        self.i_OT.append(self.dataPoints)
+        self.i_OT.append(self.gcsteps)
         self.number_of_agents_OT.append(agent_count)
 
         # group based statistics:
@@ -809,60 +809,67 @@ class Sim:
             self.breed_mass_div_OT, self.breed_chance_OT, self.fight_OT, self.help_OT, self.nothing_OT,
             self.relative_groups_OT, self.close_family_in_group_OT
         ]
-        if len(titles) != len(values):
-            raise Exception("Error len of titles must match len of vars")
+        extention = "png"
+        fn = "graphs-0.3/" + self.get_fn()
 
-        fig, axs = plt.subplots(len(values), sharex='all', figsize=(20, 60))
-        metadata = dict()
-        for i in range(len(values)):
-            axs[i].plot(self.i_OT, values[i], linewidth=0.25)
-            axs[i].axes.set_ylim([0, max(values[i])])
-            axs[i].set_ylabel(titles[i])
+        try:
+            if len(titles) != len(values):
+                raise Exception("Error len of titles must match len of vars")
 
-            metadata["Final" + titles[i]] = values[i][-1]
+            fig, axs = plt.subplots(len(values), sharex='all', figsize=(20, 60))
+            metadata = dict()
+            for i in range(len(values)):
+                axs[i].plot(self.i_OT, values[i], linewidth=0.25)
+                axs[i].axes.set_ylim([0, max(values[i])])
+                axs[i].set_ylabel(titles[i])
 
-        axs[0].axes.set_xlim([0, self.dataPoints])
-        axs[0].set_title(
-            "Simulation with {} initial agents and {} steps\nDate: {}\nNotes: {}\n\nStats:\n{}\n"
-                .format(len(self.agents), self.gcsteps, time.strftime("%D"), info,
-                        self.stats()), )
+                metadata["Final" + titles[i]] = values[i][-1]
 
-        axs[-1].set_xlabel("Number Of Steps")
+            axs[0].axes.set_xlim([0, self.dataPoints])
+            axs[0].set_title(
+                "Simulation with {} initial agents and {} steps\nDate: {}\nNotes: {}\n\nStats:\n{}\n"
+                    .format(len(self.agents), self.gcsteps, time.strftime("%D"), info,
+                            self.stats()), )
 
-        plt.tight_layout()
+            axs[-1].set_xlabel("Number Of Data Points")
 
-        plt.autoscale()
-        if (save):
-            extention = "png"
-            fn = "graphs-0.3/" + self.get_fn()
-
-            if len(values[0]) > 16383:
-                print("to manny data points, skipping excel")
-            else:
-                wb = openpyxl.Workbook(write_only=True)
-                sheet = wb.create_sheet()
-                sheet.append(["Amount of steps"])
-                sheet.append([self.gcsteps])
-                sheet.append([])
-                sheet.append(["X:"])
-                sheet.append(self.i_OT)
-                sheet.append([])
-
-                for i in range(len(values)):
-                    sheet.append([titles[i]])
-                    sheet.append(values[i])
+            plt.tight_layout()
+            plt.autoscale()
+            if save:
+                pltfn = fn + "." + extention
+                fig.savefig(pltfn, bbox_inches='tight')  # save graph
+                # add metadata:
+                im = Image.open(pltfn)
+                meta = PngImagePlugin.PngInfo()
+                for x in metadata:
+                    meta.add_text(x, str(metadata[x]))
+                im.save(pltfn, extention, pnginfo=meta)
+        except:
+            print("error in generating plt file")
+        try:
+            if save:
+                if len(values[0]) > 16383:
+                    print("to manny data points, skipping excel")
+                else:
+                    wb = openpyxl.Workbook(write_only=True)
+                    sheet = wb.create_sheet()
+                    sheet.append(["Number Of Data Points"])
+                    sheet.append([self.dataPoints])
+                    sheet.append([])
+                    sheet.append(["X:"])
+                    sheet.append(self.i_OT)
                     sheet.append([])
 
-                wb.save(fn + ".xlsx")
-            pltfn = fn + "." + extention
-            fig.savefig(pltfn, bbox_inches='tight')  # save graph
-            # add metadata:
-            im = Image.open(pltfn)
-            meta = PngImagePlugin.PngInfo()
-            for x in metadata:
-                meta.add_text(x, str(metadata[x]))
-            im.save(pltfn, extention, pnginfo=meta)
-            return fn
+                    for i in range(len(values)):
+                        sheet.append([titles[i]])
+                        sheet.append(values[i])
+                        sheet.append([])
+
+                    wb.save(fn + ".xlsx")
+        except:
+            print("error in generating excel file")
+
+        return fn
 
     def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10, data_point_freq: int = 10) -> str:
         """
