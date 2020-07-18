@@ -549,7 +549,7 @@ class Sim:
         prev_a = self.agents[0]
         prev_a.group = 0
         for a in self.agents:
-            a.group = prev_a.group + 0 if a.x - prev_a.x < 10 * self.col_const else 1
+            a.group = prev_a.group + 0 if a.x - prev_a.x < 1000 * self.col_const else 1
             prev_a = a
         return prev_a.group
 
@@ -882,7 +882,7 @@ class Sim:
         Danger:
             As of now this function has a memory leak. Until it is resolved you will need extremely high ram capacity
         """
-        #TODO: fix memory leak
+        # TODO: fix memory leak
         ims = []
         fig = plt.figure(figsize=(res_mult, res_mult))
         for i in range(steps):
