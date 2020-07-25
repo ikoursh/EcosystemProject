@@ -450,6 +450,7 @@ class Sim:
         self.food = []
         self.gcsteps = 0
         self.dataPoints = 0
+        self.interactions = 0
         for i in range(agents):  # create initial population
             mass = math.ceil(random.randrange(1, 100))
             self.agents.append(
@@ -472,6 +473,8 @@ class Sim:
 
         self.breed_mass_div_OT = []
         self.breed_chance_OT = []
+
+        self.interactions_OT = []
 
         self.fight_OT = []
         self.help_OT = []
@@ -549,7 +552,7 @@ class Sim:
         prev_a = self.agents[0]
         prev_a.group = 0
         for a in self.agents:
-            a.group = prev_a.group + 0 if a.x - prev_a.x < 1000 * self.col_const else 1
+            a.group = prev_a.group + 0 if a.x - prev_a.x < 10 * self.col_const else 1
             prev_a = a
         return prev_a.group
 
@@ -578,9 +581,11 @@ class Sim:
         # append statistics:
         self.i_OT.append(self.gcsteps)
         self.number_of_agents_OT.append(agent_count)
+        self.interactions_OT.append(self.interactions)
+        self.interactions = 0
 
         # group based statistics:
-        self.relative_groups_OT.append(self.group() / float(agent_count))
+        self.relative_groups_OT.append(self.group())
 
         # in order to reduce compute time all for data collection will occour once
 
@@ -733,6 +738,7 @@ class Sim:
             if (abs(ax - self.agents[a_s].x) <
                     self.col_const
             ):
+                self.interactions+=1
                 interact(self.agents[a], self.agents[a_s], self)
 
             self.agents[a].move(
@@ -801,7 +807,7 @@ class Sim:
             "Amount of Food Consumed", "Average Agent IQ", "Average Agent EQ",
             "Average breeding mass divider", "Average Agent Breed Chance", "Fight count relative to population size",
             "Help count relative to population size", "Ignore count relative to population size",
-            "Amount of groups relative to population size", "Close family ration in group"
+            "Number of groups", "Close family ration in group"
         ]
 
         values = [
