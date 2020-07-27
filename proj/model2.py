@@ -50,6 +50,7 @@ MAX_IQ = float(config["VARIABLES"]["MAX_IQ"])
 MIN_EQ = float(config["VARIABLES"]["MIN_EQ"])
 MAX_EQ = float(config["VARIABLES"]["MAX_EQ"])
 FOOD_FLUCT = float(config["VARIABLES"]["FOOD_FLUCT"])
+GROUP_FACTOR = float(config["VARIABLES"]["GROUP_FACTOR"])
 
 
 def map_from_to(x: float, a: float, b: float, c: float, d: float) -> float:
@@ -552,8 +553,9 @@ class Sim:
         prev_a = self.agents[0]
         prev_a.group = 0
         for a in self.agents:
-            a.group = prev_a.group + 0 if a.x - prev_a.x < 10 * self.col_const else 1
+            a.group = prev_a.group + (0 if abs(a.x - prev_a.x) < self.col_const * GROUP_FACTOR else 1)
             prev_a = a
+        print(prev_a.group)
         return prev_a.group
 
     def progress(self, steps: int, csteps: int) -> None:
@@ -738,7 +740,7 @@ class Sim:
             if (abs(ax - self.agents[a_s].x) <
                     self.col_const
             ):
-                self.interactions+=1
+                self.interactions += 1
                 interact(self.agents[a], self.agents[a_s], self)
 
             self.agents[a].move(
