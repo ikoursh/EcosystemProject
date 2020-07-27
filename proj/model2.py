@@ -5,7 +5,7 @@ import math
 import os
 import random
 import time
-from typing import Tuple, List
+from typing import Tuple
 
 import matplotlib
 
@@ -555,7 +555,6 @@ class Sim:
         for a in self.agents:
             a.group = prev_a.group + (0 if abs(a.x - prev_a.x) < self.col_const * GROUP_FACTOR else 1)
             prev_a = a
-        print(prev_a.group)
         return prev_a.group
 
     def progress(self, steps: int, csteps: int) -> None:
