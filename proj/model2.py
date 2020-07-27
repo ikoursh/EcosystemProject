@@ -5,7 +5,7 @@ import math
 import os
 import random
 import time
-from typing import Tuple, List
+from typing import Tuple
 
 import matplotlib
 
