@@ -20,6 +20,7 @@ from PIL import Image  # work with metadata via pillow
 from PIL import PngImagePlugin
 
 import openpyxl  # work with excel
+import savReaderWriter  # work with spss
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
 config.read('config.ini')
@@ -789,17 +790,26 @@ class Sim:
                      ])) + "avg breed mass divider: {}\n".format(
             np.mean([a.breed_mass_div for a in self.agents]))
 
-    def graph(self, save: bool = True, info: str = None) -> str:
+    def graph(self, info: str = None, output=("plt", "excel")) -> str:
         """
-        Graph the recorded statistics in a plt plot, as well as in an excel spreadsheet (if save is true)
+        Graph the recorded statistics in a plt plot, in an excel spreadsheet or in an ssps compatible file.
 
         Args:
-            save(bool): Save the graph + excel files
-            info(str): Additional notes. If None is passed the function will ask via input so if you don't want info, pass an empty string.
+            output (Tuple[str]): the output formats to use.
+            info(str): Additional notes for the plt plot. If None is passed the function will ask via input so if you don't want info, pass an empty string.
 
         Returns:
             str: file name without extension
         """
+        compatible_out = ["plt", "excel", "spss"]
+        e = False
+        for ro in output:
+            if ro not in compatible_out:
+                e = True
+                print("WARNING, output format {} is not supported, it will be skipped".format(ro))
+        if e:
+            print("We currently support " + str(compatible_out))
+
         if info is None:
             info = input("Enter additional information about the sim: ")
 
@@ -820,29 +830,30 @@ class Sim:
         fn = "graphs-0.3/" + self.get_fn()
 
         try:
-            if len(titles) != len(values):
-                raise Exception("Error len of titles must match len of vars")
+            if "plt" in output:
+                if len(titles) != len(values):
+                    raise Exception("Error len of titles must match len of vars")
 
-            fig, axs = plt.subplots(len(values), sharex='all', figsize=(20, 60))
-            metadata = dict()
-            for i in range(len(values)):
-                axs[i].plot(self.i_OT, values[i], linewidth=0.25)
-                axs[i].axes.set_ylim([0, max(values[i])])
-                axs[i].set_ylabel(titles[i])
+                fig, axs = plt.subplots(len(values), sharex='all', figsize=(20, 60))
+                metadata = dict()
+                for i in range(len(values)):
+                    axs[i].plot(self.i_OT, values[i], linewidth=0.25)
+                    axs[i].axes.set_ylim([0, max(values[i])])
+                    axs[i].set_ylabel(titles[i])
 
-                metadata["Final" + titles[i]] = values[i][-1]
+                    metadata["Final" + titles[i]] = values[i][-1]
 
-            axs[0].axes.set_xlim([0, self.dataPoints])
-            axs[0].set_title(
-                "Simulation with {} initial agents and {} steps\nDate: {}\nNotes: {}\n\nStats:\n{}\n"
-                    .format(len(self.agents), self.gcsteps, time.strftime("%D"), info,
-                            self.stats()), )
+                axs[0].axes.set_xlim([0, self.dataPoints])
+                axs[0].set_title(
+                    "Simulation with {} initial agents and {} steps\nDate: {}\nNotes: {}\n\nStats:\n{}\n"
+                        .format(len(self.agents), self.gcsteps, time.strftime("%D"), info,
+                                self.stats()), )
 
-            axs[-1].set_xlabel("Number Of Data Points")
+                axs[-1].set_xlabel("Number Of Data Points")
 
-            plt.tight_layout()
-            plt.autoscale()
-            if save:
+                plt.tight_layout()
+                plt.autoscale()
+
                 pltfn = fn + "." + extention
                 fig.savefig(pltfn, bbox_inches='tight')  # save graph
                 # add metadata:
@@ -853,28 +864,32 @@ class Sim:
                 im.save(pltfn, extention, pnginfo=meta)
         except:
             print("error in generating plt file")
+        transposed_data = []
+        for i in range(self.dataPoints):
+            transposed_data.append([j[i] for j in values])
         try:
-            if save:
+            if "excel" in output:
                 if len(values[0]) > 16383:
                     print("to manny data points, skipping excel")
                 else:
                     wb = openpyxl.Workbook(write_only=True)
                     sheet = wb.create_sheet()
-                    sheet.append(["Number Of Data Points"])
-                    sheet.append([self.dataPoints])
-                    sheet.append([])
-                    sheet.append(["X:"])
-                    sheet.append(self.i_OT)
-                    sheet.append([])
-
-                    for i in range(len(values)):
-                        sheet.append([titles[i]])
-                        sheet.append(values[i])
-                        sheet.append([])
-
+                    sheet.append(titles)
+                    for i in transposed_data:
+                        sheet.append(i)
                     wb.save(fn + ".xlsx")
         except:
             print("error in generating excel file")
+
+        if "spss" in output:
+            savFileName = fn + '.sav'
+            varNames = [i.replace(" ", "_") for i in titles]
+            varTypes = dict()
+            for t in varNames:
+                varTypes[t] = 0
+            with savReaderWriter.SavWriter(savFileName, varNames, varTypes) as writer:
+                for i in range(self.dataPoints):
+                    writer.writerow(transposed_data[i])
 
         return fn
 
