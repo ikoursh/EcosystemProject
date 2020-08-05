@@ -9,7 +9,6 @@ from typing import Tuple
 
 import matplotlib
 
-matplotlib.get_backend()
 import matplotlib.pyplot as plt
 
 import numpy as np
@@ -21,6 +20,21 @@ from PIL import PngImagePlugin
 
 import openpyxl  # work with excel
 import savReaderWriter  # work with spss
+
+import pickle  # support serialization
+
+import json #work with gui
+
+matplotlib.get_backend()
+
+import sys
+
+if sys.version_info[0] < 3 or sys.version_info[1] < 8:
+    raise Exception(
+        "Python 3.8 or higher is required. Download the latest version here https://www.python.org/downloads/")
+
+if sys.version_info[0] > 3:
+    print("WARNING this program was write to support python 3. Use any future versions at your discretion")
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
 config.read('config.ini')
@@ -81,6 +95,9 @@ if not os.path.isdir('.' + GRAPHS_FOLDER):
     os.mkdir('.' + GRAPHS_FOLDER)
 if not os.path.isdir('.' + ANIMATION_FOLDER):
     os.mkdir('.' + ANIMATION_FOLDER)
+
+if not os.path.isdir("./saved"):
+    os.mkdir("./saved")
 
 
 class Agent:
@@ -503,8 +520,35 @@ class Sim:
             len(self.agents), self.gcsteps,
             time.strftime("%d%M%Y%H%M%S", time.localtime()))
 
-    def run(self, steps: int = 1000, print_freq: int = None, max_attempts: int = 1, data_point_freq: int = 10) -> \
-            Tuple[bool, int]:
+    def save(self, file: str = None) -> None:
+        """
+        Save the simulation state to a file.
+
+        Args:
+            file: The path to save the state to.
+
+        Throws:
+            ValueError: if the filename does not end with .envs
+        """
+        if file is not None and file.endswith(".envs"):
+            raise ValueError("File must end with .envs")
+        pickle.dump(self, open(file if file is not None else "save/" + self.get_fn() + ".envs", "w"), 5)
+
+    @classmethod
+    def load(cls, filename: str) -> "Sim":
+        """
+        Load a simulation from a file
+        Args:
+            filename: the path to the file
+
+        Returns:
+            the loaded sim
+        """
+        with open(filename, 'rb') as f:
+            return pickle.load(f)
+
+    def run(self, steps: int = 1000, print_freq: int = None, max_attempts: int = 1, data_point_freq: int = 10,
+            gui: bool = False) -> Tuple[bool, int]:
         """
         Runs the mode
 
@@ -538,7 +582,7 @@ class Sim:
                     failed = True
                     break
                 if i % print_freq == 0:
-                    self.progress(steps, i)
+                    self.progress(steps, i, gui)
                 if i % data_point_freq == 0:
                     self.update_stats()  # update statistics
             if not failed:
@@ -558,19 +602,26 @@ class Sim:
             prev_a = a
         return prev_a.group
 
-    def progress(self, steps: int, csteps: int) -> None:
+    def progress(self, steps: int, csteps: int, gui: bool) -> None:
         """
         Print model progress
          Args:
             steps(int): How many steps are there in total
             csteps(int): The current step number
         """
-        print(
-            "{}% ({} of {}) current population size: {} amount of food: {}"
-                .format(round((csteps / steps) * 100, 2),
-                        csteps, steps,
-                        len(self.agents),
-                        len(self.food)))  # print status
+        if gui:
+            print(json.dumps({
+                "steps": csteps,
+                "food": len(self.food),
+                "agents": len(self.agents)
+            }))
+        else:
+            print(
+                "{}% ({} of {}) current population size: {} amount of food: {}"
+                    .format(round((csteps / steps) * 100, 2),
+                            csteps, steps,
+                            len(self.agents),
+                            len(self.food)))  # print status
 
     def update_stats(self) -> None:
         """
@@ -869,7 +920,7 @@ class Sim:
             transposed_data.append([j[i] for j in values])
         try:
             if "excel" in output:
-                if len(values[0]) > 16383:
+                if len(values[0]) > 1048576:
                     print("to manny data points, skipping excel")
                 else:
                     wb = openpyxl.Workbook(write_only=True)
@@ -893,7 +944,8 @@ class Sim:
 
         return fn
 
-    def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10, data_point_freq: int = 10) -> str:
+    def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10, data_point_freq: int = 10,
+                gui: bool = False) -> str:
         """
         Creates an animated model of the simulation
 
@@ -920,7 +972,7 @@ class Sim:
             if i % data_point_freq == 0:
                 self.update_stats()
             if i % print_freq == 0:
-                self.progress(steps, i)
+                self.progress(steps, i, gui)
             acu = self.size_factor / 25
             row = [0 for i in np.arange(0, 1, acu)]
             for f in self.food:
