@@ -12,12 +12,11 @@ parser.add_argument("-p", type=int, dest="pop",
 parser.add_argument("-f", type=int, dest="food",
                     help='Account of food')
 
-
 parser.add_argument("-a", help="enable animation", dest="animate", action='store_true')
 parser.add_argument("-v", help="enable verbose", dest="v", action='store_true')
 
 max_e = 1048576
-parser.add_argument("-d", type=int, dest="dp",
+parser.add_argument("-dp", type=int, dest="dp",
                     help='Maximum number of data points, defaults to excel maximum (' + str(
                         max_e) + ') if excel is used. Else, defaults to the number of steps', default=max_e)
 
@@ -25,14 +24,14 @@ parser.add_argument("--spss", help="output data in SPSS data format. Note that t
                     dest="spss", action='store_true')
 
 parser.add_argument("--no-excel",
-                    help="Don't output data to excel format. Will be enabled automatically if the number of data points exceed " + max_e,
+                    help="Don't output data to excel format. Will be enabled automatically if the number of data points exceed " + str(
+                        max_e),
                     dest="no_excel", action='store_true')
 
 parser.add_argument("--no-plt", help="Don't generate plt preview",
                     dest="no_plt", action='store_true')
 
-
-parser.add_argument("--GUI", help="Used to output progress in json format for GUI (in beta)",
+parser.add_argument("--gui", help="Used to output progress in json format for GUI (in beta)",
                     dest="gui", action='store_true')
 
 args = parser.parse_args()
@@ -64,4 +63,5 @@ if not args.no_excel:
     req_formats += ("excel",)
 if args.spss:
     req_formats += ("spss",)
-ms.graph(info="v3", output=req_formats)
+
+print("Simulation complete. Requested files are stored at: " + ms.graph(info="generated via auto.py", output=req_formats))

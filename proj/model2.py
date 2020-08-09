@@ -23,7 +23,7 @@ import savReaderWriter  # work with spss
 
 import pickle  # support serialization
 
-import json #work with gui
+import json  # work with gui
 
 matplotlib.get_backend()
 
@@ -31,7 +31,7 @@ import sys
 
 if sys.version_info[0] < 3 or sys.version_info[1] < 8:
     raise Exception(
-        "Python 3.8 or higher is required. Download the latest version here https://www.python.org/downloads/")
+        "Python 3.8 or higher is required. Download the latest version here https://www.python.org/downloads/ (you have V{})".format(sys.version_info))
 
 if sys.version_info[0] > 3:
     print("WARNING this program was write to support python 3. Use any future versions at your discretion")
@@ -586,6 +586,7 @@ class Sim:
                 if i % data_point_freq == 0:
                     self.update_stats()  # update statistics
             if not failed:
+                self.progress(steps, steps, gui)
                 return True, a
         return False, max_attempts
 
@@ -615,6 +616,7 @@ class Sim:
                 "food": len(self.food),
                 "agents": len(self.agents)
             }))
+            sys.stdout.flush()
         else:
             print(
                 "{}% ({} of {}) current population size: {} amount of food: {}"
@@ -850,7 +852,7 @@ class Sim:
             info(str): Additional notes for the plt plot. If None is passed the function will ask via input so if you don't want info, pass an empty string.
 
         Returns:
-            str: file name without extension
+            str: folder name for output
         """
         compatible_out = ["plt", "excel", "spss"]
         e = False
@@ -879,6 +881,7 @@ class Sim:
         ]
         extention = "png"
         fn = "graphs-0.3/" + self.get_fn()
+        os.mkdir(fn)
 
         try:
             if "plt" in output:
@@ -905,7 +908,7 @@ class Sim:
                 plt.tight_layout()
                 plt.autoscale()
 
-                pltfn = fn + "." + extention
+                pltfn = fn + "/plt." + extention
                 fig.savefig(pltfn, bbox_inches='tight')  # save graph
                 # add metadata:
                 im = Image.open(pltfn)
@@ -928,12 +931,12 @@ class Sim:
                     sheet.append(titles)
                     for i in transposed_data:
                         sheet.append(i)
-                    wb.save(fn + ".xlsx")
+                    wb.save(fn + "/excel.xlsx")
         except:
             print("error in generating excel file")
 
         if "spss" in output:
-            savFileName = fn + '.sav'
+            savFileName = fn + '/spss.sav'
             varNames = [i.replace(" ", "_") for i in titles]
             varTypes = dict()
             for t in varNames:
@@ -942,7 +945,7 @@ class Sim:
                 for i in range(self.dataPoints):
                     writer.writerow(transposed_data[i])
 
-        return fn
+        return os.getcwd() + "\\" + fn.replace("/", "\\");
 
     def animate(self, steps, res_mult=5, fps=10, bitrate=20000, print_freq=10, data_point_freq: int = 10,
                 gui: bool = False) -> str:
@@ -1020,6 +1023,7 @@ class Sim:
             row = None
             angle = None
             gc.collect()
+        self.progress(steps, steps, gui)
 
         ani = animation.ArtistAnimation(fig,
                                         ims,
