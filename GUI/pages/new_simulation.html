@@ -1,0 +1,68 @@
+<html lang="en" dir="ltr">
+<link rel="stylesheet" href="../css/form.css">
+<body>
+  <div id="blank_space">
+  <h1>New Simulation</h1>
+  <form id="form">
+
+    <label for="steps">Number of steps: </label>
+    <br />
+    <input type="text" name="steps" id="steps" value="100,000" oninput="update_command()">
+    <br />
+
+    <br />
+
+    <label for="population">Initial population: </label>
+    <br />
+    <input type="text" name="population" id="population" value="500" oninput="update_command()">
+    <br />
+
+    <br />
+
+    <label for="runtime">Runtime: </label>
+    <br />
+    <select name="runtime" id= "runtime" oninput="update_command()">
+      <option value="local">Local</option>
+      <option value="spell">Spell</option>
+    </select>
+    <br />
+    <br />
+
+    <label for="datapoints">Datapoints: </label>
+    <br />
+
+
+    <div class="range-slider">
+      <input type="range" value="100" min="0" step="100" max="500" id="datapoints" oninput="update_range()">
+      <input type="text" class = "range_value" id="datapoints_value" value = 100 oninput="update_value()">
+    </div>
+
+
+    <br />
+
+    <label>Statistics output formats: </label><br />
+
+    <input type="checkbox" name="plt" value="plt" id ="plt" oninput="update_command()" checked="checked">
+    <label for="plt">PLT</label>
+
+    <input type="checkbox" name="excel" id="excel" value="excel" oninput="update_command()" checked="checked">
+    <label for="excel">Excel</label>
+
+    <input type="checkbox" name="spss" value="spss" id ="spss" oninput="update_command()">
+    <label for="spss">SPSS</label> <br />
+
+
+    <br />
+
+    <input type="button" onclick= "new_simulation()" name="submit" value="Create Simulation">
+    <br>
+    <br>
+    <h3>Command: </h3>
+    <h3 id="command"></h3>
+  </form>
+</div>
+  <script type="text/javascript" src="../js/new_simulation.js"> </script>
+
+</body>
+
+</html>

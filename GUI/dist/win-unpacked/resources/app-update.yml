@@ -1,0 +1,4 @@
+owner: ikoursh
+repo: env_sim
+provider: github
+updaterCacheDirName: ecosystem-project-gui-updater

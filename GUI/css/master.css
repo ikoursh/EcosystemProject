@@ -1,0 +1,82 @@
+#header{
+  background-color: #040446;
+  margin: 0;
+  padding: 0;
+  top:0;
+}
+
+
+#option_group{
+  position: static;
+  display: inline-block;
+  left: 0;
+  width: auto;
+  background-color: #03033A;
+  height: 100%;
+
+  top: 160px;
+}
+
+h2{
+  font-size: 30px;
+  padding: 0;
+  margin-bottom: 50px;
+  margin-left: 30px;
+  margin-right: 130px;
+  opacity: 70%;
+  cursor:pointer;
+}
+
+.active {
+  opacity: 100%;
+}
+
+#empty_space{
+  position: relative;
+  flex-grow: 1;
+  display: inline-block;
+}
+
+h1{
+  font-size: 49px;
+  padding: 20px;
+  margin-left: 10px;
+  margin: 0;
+  cursor:pointer;
+
+}
+
+*{
+  font-family: tahoma;
+  color: white;
+  font-weight: 100;
+}
+
+body{
+  background-color: #E5E8EC;
+  padding: 0;
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+#outer{
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+
+#menue_content{
+  flex-grow: 1;
+  display: flex;
+  flex-flow: row;
+}
+
+
+#settings{
+  bottom: 0px;
+  position: absolute;
+}

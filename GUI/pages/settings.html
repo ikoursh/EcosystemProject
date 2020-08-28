@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="../css/form.css">
+
+</head>
+
+<body>
+
+  <div id="blank_space">
+    <h1>Settings</h1>
+
+    <form id="form">
+
+      <label for="path">Path to the simulation: </label>
+      <br />
+      <input type="text" name="path" id="path" >
+      <br />
+      <br />
+      <input type="button" onclick= "update_settings()" name="submit" value="Save Settings">
+
+    </form>
+    <!-- No need for an extenal js file -->
+    <script type="text/javascript">
+      const require = parent.require;
+      const Store = require("electron-store");
+      const store = new Store();
+
+      const path = document.getElementById('path')
+
+
+      path.value = store.get("env_sim_path", "")
+      function update_settings() {
+        setPath();
+      }
+      function setPath() {
+        store.set("env_sim_path", path.value);
+      }
+    </script>
+  </div>
+
+</body>
+
+</html>

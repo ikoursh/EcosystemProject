@@ -1,0 +1,9 @@
+
+@font-face {font-family: "Objektiv Mk1";
+  src: url("fonts/objektivMk1.eot"); /* IE9*/
+  src: url("fonts/objektivMk1.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+  url("fonts/objektivMk1.woff2") format("woff2"), /* chrome、firefox */
+  url("fonts/objektivMk1.woff") format("woff"), /* chrome、firefox */
+  url("fonts/objektivMk1.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url("fonts/objektivMk1.svg#Objektiv Mk1 W03 Regular") format("svg"); /* iOS 4.1- */
+}

@@ -29,9 +29,9 @@ matplotlib.get_backend()
 
 import sys
 
-if sys.version_info[0] < 3 or sys.version_info[1] < 8:
+if sys.version_info[0] < 3 or sys.version_info[1] < 4:
     raise Exception(
-        "Python 3.8 or higher is required. Download the latest version here https://www.python.org/downloads/ (you have V{})".format(sys.version_info))
+        "Python 3.4 or higher is required. Download the latest version here https://www.python.org/downloads/ ")
 
 if sys.version_info[0] > 3:
     print("WARNING this program was write to support python 3. Use any future versions at your discretion")
@@ -532,7 +532,7 @@ class Sim:
         """
         if file is not None and file.endswith(".envs"):
             raise ValueError("File must end with .envs")
-        pickle.dump(self, open(file if file is not None else "save/" + self.get_fn() + ".envs", "w"), 5)
+        pickle.dump(self, open(file if file is not None else "save/" + self.get_fn() + ".envs", "w"), 4)
 
     @classmethod
     def load(cls, filename: str) -> "Sim":

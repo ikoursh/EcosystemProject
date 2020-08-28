@@ -1,0 +1,11 @@
+directories:
+  output: dist
+  buildResources: build
+appId: envSim.gui
+extraFiles:
+  - filter:
+      - icon.ico
+files:
+  - filter:
+      - '**/*'
+electronVersion: 9.2.0

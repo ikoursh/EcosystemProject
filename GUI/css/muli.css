@@ -1,0 +1,8 @@
+@font-face {font-family: "Muli";
+  src: url("fonts/muli.eot"); /* IE9*/
+  src: url("fonts/muli.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+  url("fonts/muli.woff2") format("woff2"), /* chrome、firefox */
+  url("fonts/muli.woff") format("woff"), /* chrome、firefox */
+  url("fonts/muli.ttf") format("truetype"), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url("fonts/muli.svg#Muli") format("svg"); /* iOS 4.1- */
+}

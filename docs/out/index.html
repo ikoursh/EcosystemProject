@@ -1,0 +1,326 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to Ecosystem Project’s documentation! &mdash; Eco System Project 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/style.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> Eco System Project
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to Ecosystem Project’s documentation!</a></li>
+<li><a class="reference internal" href="#quick-setup">Quick Setup</a><ul>
+<li><a class="reference internal" href="#downloading-and-installing-the-simultaion">Downloading and installing the simultaion</a></li>
+<li><a class="reference internal" href="#a-simple-example">A simple example</a></li>
+<li><a class="reference internal" href="#more-advanced-users">More advanced users</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-simulation">The Simulation</a><ul>
+<li><a class="reference internal" href="#global-paramaters">Global Paramaters</a></li>
+<li><a class="reference internal" href="#the-simulation-class">The Simulation class</a></li>
+<li><a class="reference internal" href="#the-agent-class">The Agent class</a></li>
+<li><a class="reference internal" href="#the-food-class">The Food class</a></li>
+<li><a class="reference internal" href="#helper-functions">Helper Functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-nn">The Neural Network</a><ul>
+<li><a class="reference internal" href="#the-neuralnetwork-class">The NeuralNetwork class</a></li>
+<li><a class="reference internal" href="#the-neural-network-layer-class">The Neural Network Layer class</a></li>
+<li><a class="reference internal" href="#id2">Helper Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Eco System Project</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to Ecosystem Project’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-ecosystem-project-s-documentation">
+<h1>Welcome to Ecosystem Project’s documentation!<a class="headerlink" href="#welcome-to-ecosystem-project-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">Author: Inbar Koursh</div>
+<div class="line">Instructor: Shlomo Rozenfeld</div>
+<div class="line">This project is submitted to Moach at Hemda institute.</div>
+</div>
+<p>To see the source code you can go to the GitHub repository here: <a class="reference external" href="https://github.com/ikoursh/EcosystemProject">https://github.com/ikoursh/EcosystemProject</a></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Because the project is still in alpha, the repository is not publicly available.</p>
+</div>
+</div>
+<div class="section" id="quick-setup">
+<h1>Quick Setup<a class="headerlink" href="#quick-setup" title="Permalink to this headline">¶</a></h1>
+<p>Hi, this will be a quick tutorial for how to setup the simulation</p>
+<div class="section" id="downloading-and-installing-the-simultaion">
+<h2>Downloading and installing the simultaion<a class="headerlink" href="#downloading-and-installing-the-simultaion" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ikoursh/EcoSystemProject
+<span class="nb">cd</span> EcoSystemProject/proj
+pip -r requirements.txt
+</pre></div>
+</div>
+<dl class="simple">
+<dt>If you want to add support for animation you will need an instalation of ffmpeg. To do so you can go <a class="reference external" href="https://ffmpeg.org/download.html">here</a> (don’t forget to add it to PATH, <a class="reference external" href="https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/">this</a> is a great explanation)</dt><dd><p>Note that pip install ffmpeg does not seem to work, however, linux users may use apt.</p>
+</dd>
+</dl>
+<p>Done!
+You can now import the module from python</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>It’s always a good idea to setup a virtual enviorment</p>
+</div>
+</div>
+<div class="section" id="a-simple-example">
+<h2>A simple example<a class="headerlink" href="#a-simple-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">model2</span> <span class="kn">import</span> <span class="n">Sim</span>
+<span class="n">my_sim</span> <span class="o">=</span> <span class="n">Sim</span><span class="p">()</span>
+<span class="n">my_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">max_attempts</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">model2.Sim.run()</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">model2.Sim</span></code></p>
+</div>
+</div>
+<div class="section" id="more-advanced-users">
+<h2>More advanced users<a class="headerlink" href="#more-advanced-users" title="Permalink to this headline">¶</a></h2>
+<p>For users who desire more control, see the <a class="reference internal" href="#global-paramaters"><span class="std std-ref">Global Paramaters</span></a> section.
+Aditionaly, it is possible to manualy call the <code class="xref py py-meth docutils literal notranslate"><span class="pre">model2.Sim.step()</span></code> function directley for more persice control.
+See the source code for more information.</p>
+</div>
+</div>
+<div class="section" id="the-simulation">
+<h1>The Simulation<a class="headerlink" href="#the-simulation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="global-paramaters">
+<h2>Global Paramaters<a class="headerlink" href="#global-paramaters" title="Permalink to this headline">¶</a></h2>
+<p id="id1">The simulation makes use of a config.ini file that keeps track of the global paramateres.
+These are the global constants that define the simulation:</p>
+<ul class="simple">
+<li><p><strong>INT_CONST</strong> = 1 - Energy cost for intelligence (IQ, EQ average)</p></li>
+<li><p><strong>ENLB_CONST</strong> = 0.5 - energy to mass ratio used to determine if an agent is sick if so the agent starts to lose health</p></li>
+<li><p><strong>ENGB_CONST</strong> = 0.5 – energy to mass ratio used to determine if an agent is healthy, used to gain health and to gain mass if the agent is still growing</p></li>
+<li><p><strong>ENL_CONST</strong> = 1 - the amount of health lost if an agent’s energy is under the threshold.</p></li>
+<li><p><strong>ENG_CONST</strong> = 4 - the amount of energy gained if an agent is above the energy threshold</p></li>
+<li><p><strong>MAX_LIFE_SPAN</strong> = 200 - the maximum amount of steps an agent with mass 100 can survive after reaching maturity</p></li>
+<li><p><strong>AGE_CONST</strong> = ENG_CONST - (100 / MAX_LIFE_SPAN) - Age suffered every step, derived from the maximum life span and the amount of health an agent can gain per turn.</p></li>
+<li><p><strong>POP_DENCITY</strong> = 1 - controls how concentrated is the populus (map scaled size)</p></li>
+<li><p><strong>AGING_TIME</strong> = 0.99 - the mass percentage required before maturity (age starts)</p></li>
+<li><p><strong>G_SPEED_FACTOR</strong> = 1 - controls universal speed, provides a way to control gravity and friction</p></li>
+<li><p><strong>FOOD_CONST</strong> = 25 - how much energy a food item contains</p></li>
+<li><p><strong>START_MASS_P</strong> = 0.95 – The mass to final mass ratio for the initial population</p></li>
+<li><p><strong>G_FOOD_COL_CONST</strong> = 0.1 - the global accuracy for food collisionss (actual is scaled)</p></li>
+<li><p><strong>G_FIGHT_COL_CONST</strong> = 0.1 - the global accuracy for fight collisionss (actual is scaled)</p></li>
+<li><p><strong>MIN_IQ</strong> = 1 - the minimum number of hidden neurons (per layer).</p></li>
+<li><p><strong>MAX_IQ</strong> = 10 – the maximum number of hidden neurons (per layer)</p></li>
+<li><p><strong>MIN_EQ</strong> = 1– the minimum number of hidden neurons (per layer)</p></li>
+<li><p><strong>MAX_EQ</strong> = 10 - the maximum number of hidden neurons (per layer)</p></li>
+<li><p><strong>FOOD_FLUCT</strong> = 1 - 0.3 – the percentage food is allowed to dip before it is reproduced.</p></li>
+</ul>
+<span class="target" id="module-model2"></span></div>
+<div class="section" id="the-simulation-class">
+<h2>The Simulation class<a class="headerlink" href="#the-simulation-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="the-agent-class">
+<h2>The Agent class<a class="headerlink" href="#the-agent-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="the-food-class">
+<h2>The Food class<a class="headerlink" href="#the-food-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="helper-functions">
+<h2>Helper Functions<a class="headerlink" href="#helper-functions" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="module-nn">
+<span id="the-neural-network"></span><h1>The Neural Network<a class="headerlink" href="#module-nn" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-neuralnetwork-class">
+<h2>The NeuralNetwork class<a class="headerlink" href="#the-neuralnetwork-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="the-neural-network-layer-class">
+<h2>The Neural Network Layer class<a class="headerlink" href="#the-neural-network-layer-class" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="id2">
+<h2>Helper Functions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Inbar Koursh
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
