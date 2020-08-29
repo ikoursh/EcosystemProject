@@ -22,9 +22,9 @@ cd EcosystemProject/proj
 pip install -r requierments.txt
 ```
 
-Setup the GUI (windows only)
+Setup the GUI (Windows only)
 ----------------------------
-This is usefull for pepole who do not feel comfertable with the command line.
+This is useful for people who do not feel comfortable with the command line.
 1. Complete the initial setup
 2. install the GUI from EcosystemProject/GUI/dist/EcoSystem-Project-GUI Setup 1.0.0.exe
 3. Open the program
@@ -35,15 +35,15 @@ You are now done!
 Spell integration
 -----------------
 
-For both GUI and CLI spell is a usefull tool. It allows you to run your commands on a server, thus freeing up your computer's resources. You can also chose to run simulations on more powerfull systems.
+For both GUI and CLI spell is a useful tool. It allows you to run your commands on a server, thus freeing up your computer's resources. You can also choose to run simulations on more powerful systems.
 
-Because of the nature of this project Spell is highly recomended. Click [here](https://web.spell.ml/refer/ikoursh) to learn create a free account.
+Because of the nature of this project Spell is highly recommended. Click [here](https://web.spell.ml/refer/ikoursh) to create a free account.
 
-Billing costs for spell are available [here](https://spell.ml/faqs#how-much-does-it-cost-for-developer) but I recomend sticking to the free verssion.
+Billing costs for Spell are available [here](https://spell.ml/faqs#how-much-does-it-cost-for-developer) but I recommend sticking to the free version.
 
 Use
 ===
-In this section I will outline 3 ways to use this project.
+In this section, I will outline 3 ways to use this project.
 ## Using [auto.py](proj/auto.py)
 
 [auto.py](proj/auto.py) is the recommended way to use envSim.
@@ -73,7 +73,7 @@ optional arguments:
 
 ## Using the GUI
 Simulations can be created using the new simulation tab. 
-Simply enter the parramaters and the simulation command will be generated for you! Once you are done click "create simulatio" and the GUI will run the command for you.
+Simply enter the parameters and the simulation command will be generated for you! Once you are done click "create simulation" and the GUI will run the command for you.
 
 All simulation can be seen in the "My simulations" tab. Once a simulation is completed (as indicated by the progress bar) you can click on it and it will take you directly to the output files.
 
@@ -82,9 +82,9 @@ All simulation can be seen in the "My simulations" tab. Once a simulation is com
 Please check out the API documentation for instructions to use this project as a library.
 
 
-API Documentaion
+API Documentation
 ================
-This project was documented in accordance with the google api standards and was compiled using SPHINX.
+This project was documented in accordance with the google API standards and was compiled using SPHINX.
 
 https://inbarkoursh.com/ecosystemproject/
 
