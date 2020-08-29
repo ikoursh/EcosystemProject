@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from model2 import Sim
 import argparse
 import math

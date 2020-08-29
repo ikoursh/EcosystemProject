@@ -3,7 +3,7 @@ import numpy
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
 config.read('config.ini')
-# config.read('C:\\Users\\Student\\Documents\\EcoSystemProject\\proj\\config.ini')
+
 if config["GPU"]["USE_GPU"].lower() == "true":
     print("use GPU is on")
     try:
