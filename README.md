@@ -11,10 +11,10 @@
 
 > Studying natural biological systems using a simulated ecosystem and reinforcement learning.
 
-[Project Paper](Project%20Paper.pdf)
+Project Paper
 ==================================
-If you are interestead in the paper accompanying this project you can find it [here](Project%20Paper.pdf).  
-The word version is also available [here](Project%20Paper.docx).
+If you are interestead in the paper accompanying this project you can find it [here](https://inbarkoursh.com/ecosystemproject/paper.pdf).  
+The word version is also available [here](https://inbarkoursh.com/ecosystemproject/paper.pdf).
 
 Setup
 =====
