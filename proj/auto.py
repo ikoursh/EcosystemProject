@@ -55,7 +55,7 @@ if args.v:
 if args.animate:
     ms.animate(args.steps, data_point_freq=data_point_freq, gui=args.gui)
 else:
-    ms.run(args.steps, max_attempts=-1, data_point_freq=data_point_freq, gui=args.gui)
+    ms.run(args.steps, data_point_freq=data_point_freq, gui=args.gui)
 
 req_formats = ()
 if not args.no_plt:

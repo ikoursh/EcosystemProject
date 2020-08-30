@@ -970,7 +970,7 @@ class Sim:
         fig = plt.figure(figsize=(res_mult, res_mult))
         for i in range(steps):
             if not self.step():
-                return
+                break
             if i % data_point_freq == 0:
                 self.update_stats()
             if i % print_freq == 0:
