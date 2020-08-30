@@ -14,7 +14,7 @@
 Project Paper
 ==================================
 If you are interestead in the paper accompanying this project you can find it [here](https://inbarkoursh.com/ecosystemproject/paper.pdf).  
-The word version is also available [here](https://inbarkoursh.com/ecosystemproject/paper.pdf).
+The word version is also available [here](Project%20Paper.docx).
 
 Setup
 =====
