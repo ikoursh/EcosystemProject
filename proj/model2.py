@@ -716,37 +716,23 @@ class Sim:
         )  # sort agents by position, allows to quickly determine the closest agent with low complexity
         self.food.sort(key=lambda ag: ag.x)
         food_index = 0  # used to find closest food item with low complexity
-        debug = []
+
         for a in range(len(self.agents)):
             if a >= len(self.agents):  # agents can be removed but the range isn't updated
                 return True
 
             ax = self.agents[a].x
 
-            tf = None
-            lf = None
-            tmp_fi = food_index  # crete debug data
-            debug_line = "food length: " + str(len(self.food)) + " start search index: " + str(food_index)
+            tf = None #This food
+            lf = None #Last food
             for i in range(food_index, len(self.food)):
-                try:
-                    if self.food[i].x > ax:
-                        food_index = i - 1
-                        tf = self.food[i]
-                        debug_line += " found food index " + str(i) + " new food index set to " + str(i - 1)
-                        break
-                    else:
-                        lf = self.food[i]
-                except:  # print debud data
-                    print("there was an unexpected crash")
-                    print("Agent number " + str(a) + " out of " + str(len(self.agents)))
-                    print("Food index at crash was " + str(i))
-                    print("Length of food list is " + str(len(self.food)))
-                    print("The food index at the start of the search was " + str(tmp_fi))
-                    print("\n\n debug: ")
-                    for p in debug:
-                        print(p)
-                    exit(-1)
-
+                
+                if self.food[i].x > ax:
+                    food_index = i - 1
+                    tf = self.food[i]
+                    break
+                else:
+                    lf = self.food[i]
             if tf is None:
                 tf = self.food[0]
             if lf is None:
@@ -763,10 +749,8 @@ class Sim:
                 self.food.remove(tf if dtf < dlf else lf)  # remove food
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
-                food_index -= 1
-                debug_line += " food was consumed, new food index is now " + str(food_index)
+                food_index -= 1 # move the food index back
 
-            debug.append(debug_line)
 
             # because agents have been sorted by x values, it is easy to find the closest agent by comparing the agent before and the one after
             if a == 0:
