@@ -24,9 +24,12 @@ jobs:
         
       - name: Setup Python #setup python
         uses: actions/setup-python@v2
+      
+      - name: Allow file execution
+        run: sudo chmod +x proj/auto.py
 
-      - name: check that the basic run is working
+      - name: Check that the basic run is working
         run: proj/auto.py -s 1000 --spss
       
-      - name: check that the help menue works
+      - name: Check that the help menue works
         run: proj/auto.py --help
