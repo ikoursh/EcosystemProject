@@ -24,7 +24,7 @@ Initial setup (always required)
 ``` bash
 git clone https://github.com/ikoursh/EcosystemProject
 cd EcosystemProject/proj
-pip install -r requierments.txt
+pip install -r requirements.txt
 ```
 
 Setup the GUI (Windows only)
