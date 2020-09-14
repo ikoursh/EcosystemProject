@@ -36,9 +36,11 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 4:
 if sys.version_info[0] > 3:
     print("WARNING this program was write to support python 3. Use any future versions at your discretion")
 
+dir_path = os.path.dirname(os.path.realpath(__file__))
+
 config = configparser.ConfigParser(inline_comment_prefixes="#")
-config.read('config.ini')
-# config.read('C:\\Users\\Student\\Documents\\EcoSystemProject\\proj\\config.ini');
+config.read(os.path.join(dir_path, 'config.ini'))
+
 
 INT_CONST = float(config["VARIABLES"]["INT_CONST"])
 MOV_CONST = float(config["VARIABLES"]["MOV_CONST"])
