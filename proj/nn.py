@@ -103,7 +103,7 @@ class NeuralNetwork:
         nodes(list[int]): A list of the amount of nodes for every layer
 
     Attributes:
-        layers(list[NNLayer]): A list of all the layers composing the neural network
+        layers(np.ndarray[NNLayer]): A list of all the layers composing the neural network
 
     Raises:
         Exception: If the nodes list is shorter than 2
@@ -115,9 +115,9 @@ class NeuralNetwork:
             raise Exception(
                 "error, the neural network needs to have an input and output layer"
             )
-        self.layers = []
+        self.layers = xp.ndarray([len(nodes) - 1], dtype=NeuralNetwork)
         for i in range(len(nodes) - 1):
-            self.layers.append(NNLayer(nodes[i + 1], nodes[i]))
+            self.layers[i] = NNLayer(nodes[i + 1], nodes[i])
 
     def feed_forward(self, xs: numpy.ndarray) -> numpy.ndarray:
         """
@@ -150,5 +150,5 @@ class NeuralNetwork:
         """
         Mutate all the layers of the neural network
         """
-        for l in self.layers:
-            l.mutate()
+        for layer in self.layers:
+            layer.mutate()

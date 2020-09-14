@@ -642,23 +642,24 @@ class Sim:
         # group based statistics:
         self.relative_groups_OT.append(self.group())
 
-        # in order to reduce compute time all for data collection will occour once
+        # in order to reduce compute time all for data collection will occur once
 
-        helper_mass = []
-        helper_iq = []
-        helper_eq = []
-        helper_bmd = []
-        helper_bch = []
+        helper_mass = np.ndarray([agent_count])
+        helper_iq = np.ndarray([agent_count])
+        helper_eq = np.ndarray([agent_count])
+        helper_bmd = np.ndarray([agent_count])
+        helper_bch = np.ndarray([agent_count])
         helper_group_i = -1
         helper_group_size = []
         helper_close_family_group = []
 
-        for a in self.agents:
-            helper_mass.append(a.mass)
-            helper_iq.append(a.iq)
-            helper_eq.append(a.eq)
-            helper_bmd.append(a.breed_mass_div)
-            helper_bch.append(a.breed_chance)
+        for i in range(agent_count):
+            a = self.agents[i]
+            helper_mass[i] = a.mass
+            helper_iq[i] = a.iq
+            helper_eq[i] = a.eq
+            helper_bmd[i] = a.breed_mass_div
+            helper_bch[i] = a.breed_chance
             if a.group != helper_group_i:
                 a.group = helper_group_i
                 helper_close_family_group.append([])
@@ -677,10 +678,8 @@ class Sim:
         self.eat = 0
         self.iq_OT.append(np.mean(helper_iq))
         self.eq_OT.append(np.mean(helper_eq))
-        self.breed_mass_div_OT.append(
-            np.mean(helper_bmd))
-        self.breed_chance_OT.append(
-            np.mean([a.breed_chance for a in self.agents]))
+        self.breed_mass_div_OT.append(np.mean(helper_bmd))
+        self.breed_chance_OT.append(np.mean(helper_bch))
 
         self.fight_OT.append(self.fight / agent_count)
         self.help_OT.append(self.help / agent_count)
@@ -709,7 +708,9 @@ class Sim:
         if len(self.food) < FOOD_FLUCT * self.food_count:
             self.cfood()
 
-        if len(self.agents) <= 1:
+        agent_count = len(self.agents)
+
+        if agent_count <= 1:
             print("ALERT: the model has died")
             return False
         self.agents.sort(
@@ -717,36 +718,24 @@ class Sim:
         )  # sort agents by position, allows to quickly determine the closest agent with low complexity
         self.food.sort(key=lambda ag: ag.x)
         food_index = 0  # used to find closest food item with low complexity
-        debug = []
-        for a in range(len(self.agents)):
-            if a >= len(self.agents):  # agents can be removed but the range isn't updated
+
+        for a in range(agent_count):
+            agent_count = len(self.agents)
+
+            if a >= agent_count:  # agents can be removed but the range isn't updated
                 return True
 
             ax = self.agents[a].x
 
             tf = None
             lf = None
-            tmp_fi = food_index  # crete debug data
-            debug_line = "food length: " + str(len(self.food)) + " start search index: " + str(food_index)
             for i in range(food_index, len(self.food)):
-                try:
-                    if self.food[i].x > ax:
-                        food_index = i - 1
-                        tf = self.food[i]
-                        debug_line += " found food index " + str(i) + " new food index set to " + str(i - 1)
-                        break
-                    else:
-                        lf = self.food[i]
-                except:  # print debud data
-                    print("there was an unexpected crash")
-                    print("Agent number " + str(a) + " out of " + str(len(self.agents)))
-                    print("Food index at crash was " + str(i))
-                    print("Length of food list is " + str(len(self.food)))
-                    print("The food index at the start of the search was " + str(tmp_fi))
-                    print("\n\n debug: ")
-                    for p in debug:
-                        print(p)
-                    exit(-1)
+                if self.food[i].x > ax:
+                    food_index = i - 1
+                    tf = self.food[i]
+                    break
+                else:
+                    lf = self.food[i]
 
             if tf is None:
                 tf = self.food[0]
@@ -765,40 +754,29 @@ class Sim:
                 self.agents[a].eat(FOOD_CONST)  # eat food
                 self.eat += 1  # update food statistic
                 food_index -= 1
-                debug_line += " food was consumed, new food index is now " + str(food_index)
-
-            debug.append(debug_line)
 
             # because agents have been sorted by x values, it is easy to find the closest agent by comparing the agent before and the one after
-            if a == 0:
-                d1 = abs(ax - self.agents[-1].x)
+
+            ta = self.agents[a + 1 if a != agent_count - 1 else 0]
+            la = self.agents[(a - 1) if a != 1 else agent_count-1]
+
+            dta = mk_round(ta.x - ax)
+            dla = mk_round(la.x - ax)
+
+            if dta < dla:
+                dagent = dta
+                a_s = ta
             else:
-                d1 = abs(ax - self.agents[a - 1].x)
+                dagent = dla
+                a_s = la
 
-            try:
-                d2 = abs(ax - self.agents[a + 1].x)
-            except:
-                d2 = abs(ax - self.agents[0].x)
-
-            if d2 < d1:
-                try:
-                    min_d = ax - self.agents[a + 1].x
-                except:
-                    break
-                a_s = a + 1
-            else:
-                min_d = ax - self.agents[a - 1].x
-                a_s = a - 1
-
-            if (abs(ax - self.agents[a_s].x) <
-                    self.col_const
-            ):
+            if abs(dagent) < self.col_const:
                 self.interactions += 1
-                interact(self.agents[a], self.agents[a_s], self)
+                interact(self.agents[a], a_s, self)
 
             self.agents[a].move(
                 self.agents[a].think(
-                    dfood, min_d, self.agents[a_s]
+                    dfood, dagent, a_s
                 )  # pass the environment variables to the brain of the agent
             )  # updating agent position
 
