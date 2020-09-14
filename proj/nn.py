@@ -1,9 +1,12 @@
 import configparser
 import numpy
+import os
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
-config.read('config.ini')
-# config.read('C:\\Users\\Student\\Documents\\EcoSystemProject\\proj\\config.ini')
+config.read(os.path.join(dir_path, 'config.ini'))
+
 if config["GPU"]["USE_GPU"].lower() == "true":
     print("use GPU is on")
     try:
