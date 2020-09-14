@@ -6,8 +6,6 @@ Welcome to Ecosystem Project's documentation!
 
 To see the source code you can go to the GitHub repository here: https://github.com/ikoursh/EcosystemProject
 
-.. Note:: Because the project is still in alpha, the repository is not publicly available.
-
 
 Quick Setup
 ===========
@@ -26,12 +24,27 @@ If you want to add support for animation you will need an installation of ffmpeg
  Note that pip install ffmpeg does not seem to work, however, linux users may use apt.
 
 Done!
-You can now import the module from python
+You can now import the module from python or use the included auto.py file
 
 .. Hint:: It's always a good idea to setup a virtual environment
 
-A simple example
+auto.py
 ----------------
+
+.. code-block:: bash
+
+    python3 auto.py -s 100000
+
+You can run:
+
+.. code-block:: bash
+
+    python3 auto.py -h
+
+To get more information
+
+Importing the model directly
+----------------------------
 
 .. code-block:: python
 
@@ -47,17 +60,17 @@ More advanced users
 -------------------
 
 For users who desire more control, see the :ref:`Global Paramaters` section.
-Aditionaly, it is possible to manualy call the :meth:`model2.Sim.step` function directley for more persice control.
+Additionally, it is possible to manually call the :meth:`model2.Sim.step` function directly for more precise control.
 See the source code for more information.
 
 
 The Simulation
 ==============
 
-Global Paramaters
+Global Parameters
 -----------------
 
-.. _Global Paramaters:
+.. _Global Parameters:
 
 The simulation makes use of a config.ini file that keeps track of the global parameters.
 These are the global constants that define the simulation
@@ -69,13 +82,13 @@ These are the global constants that define the simulation
 *	**ENG_CONST** = 4 - the amount of energy gained if an agent is above the energy threshold
 *	**MAX_LIFE_SPAN** = 200 - the maximum amount of steps an agent with mass 100 can survive after reaching maturity
 *	**AGE_CONST** = ENG_CONST - (100 / MAX_LIFE_SPAN) - Age suffered every step, derived from the maximum life span and the amount of health an agent can gain per turn.
-*	**POP_DENCITY** = 1 - controls how concentrated is the populus (map scaled size)
+*	**POP_DENCITY** = 1 - controls how concentrated is the populous (map scaled size)
 *	**AGING_TIME** = 0.99 - the mass percentage required before maturity (age starts)
 *	**G_SPEED_FACTOR** = 1 - controls universal speed, provides a way to control gravity and friction
 *	**FOOD_CONST** = 25 - how much energy a food item contains
 *	**START_MASS_P** = 0.95 – The mass to final mass ratio for the initial population
-*	**G_FOOD_COL_CONST** = 0.1 - the global accuracy for food collisionss (actual is scaled)
-*	**G_FIGHT_COL_CONST** = 0.1 - the global accuracy for fight collisionss (actual is scaled)
+*	**G_FOOD_COL_CONST** = 0.1 - the global accuracy for food collisions (actual is scaled)
+*	**G_FIGHT_COL_CONST** = 0.1 - the global accuracy for fight collisions (actual is scaled)
 *	**MIN_IQ** = 1 - the minimum number of hidden neurons (per layer).
 *	**MAX_IQ** = 10 – the maximum number of hidden neurons (per layer)
 *	**MIN_EQ** = 1– the minimum number of hidden neurons (per layer)
@@ -109,8 +122,6 @@ The Food class
 
 Helper Functions
 ----------------
-
-.. autofunction:: isZero
 
 .. autofunction:: map_from_to
 
@@ -146,8 +157,8 @@ The Neural Network Layer class
 Helper Functions
 ----------------
 
-.. autofunction:: s
+.. autofunction:: sigmoid
 
-.. autofunction:: m
+.. autofunction:: mutate
 
 
