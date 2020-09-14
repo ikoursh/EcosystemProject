@@ -1,17 +1,16 @@
-#!/usr/bin/env python3
 from model2 import Sim
 import argparse
 import math
 
-parser = argparse.ArgumentParser(description='Run an ecosystem simulation', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser = argparse.ArgumentParser(description='Run the default simulation')
 parser.add_argument("-s", type=int, dest="steps",
-                    help='Number of steps to run the sim', default=1000)
+                    help='Number of steps to run the sim', required=True)
 
 parser.add_argument("-p", type=int, dest="pop",
                     help='Initial population size', default=500)
 
 parser.add_argument("-f", type=int, dest="food",
-                    help='Ammount of food')
+                    help='Account of food')
 
 parser.add_argument("-a", help="enable animation", dest="animate", action='store_true')
 parser.add_argument("-v", help="enable verbose", dest="v", action='store_true')
@@ -55,7 +54,7 @@ if args.v:
 if args.animate:
     ms.animate(args.steps, data_point_freq=data_point_freq, gui=args.gui)
 else:
-    ms.run(args.steps, data_point_freq=data_point_freq, gui=args.gui)
+    ms.run(args.steps, max_attempts=-1, data_point_freq=data_point_freq, gui=args.gui)
 
 req_formats = ()
 if not args.no_plt:
