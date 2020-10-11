@@ -1,7 +1,23 @@
+#!/usr/bin/env python3
+
+# Ecosystem project - studying natural biological systems using a simulated ecosystem and reinforcement learning.
+# Copyright (C) 2020 Inbar Koursh
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import configparser
 import copy
 import gc
-import math
 import os
 import random
 import time
@@ -40,7 +56,6 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 config = configparser.ConfigParser(inline_comment_prefixes="#")
 config.read(os.path.join(dir_path, 'config.ini'))
-
 
 INT_CONST = float(config["VARIABLES"]["INT_CONST"])
 MOV_CONST = float(config["VARIABLES"]["MOV_CONST"])
@@ -280,14 +295,14 @@ class Agent:
         nsb = copy.deepcopy(self.social_brain)
         nsb.mutate()
 
-        nm = math.ceil((self.mass + random.randrange(-10, 10)) * self.breed_mass_div)
+        nm = np.ceil((self.mass + random.randrange(-10, 10)) * self.breed_mass_div)
         self.health -= nm
         self.mass -= nm
         if self.health <= 0 or self.mass < 1 or nm < 1:
             self.health = -1
             return None  # died in childbirth
         return Agent(self.iq, self.eq, nm, self.x + random.uniform(0.001, -0.001), nid,
-                     math.ceil(nm / self.breed_mass_div),
+                     np.ceil(nm / self.breed_mass_div),
                      self.breed_mass_div + random.uniform(0.01, -0.01), self.breed_chance + random.uniform(0.01, -0.01),
                      self.size_factor, nb, nsb, self.id)
 
@@ -473,11 +488,11 @@ class Sim:
         self.dataPoints = 0
         self.interactions = 0
         for i in range(agents):  # create initial population
-            mass = math.ceil(random.randrange(1, 100))
+            mass = np.ceil(random.randrange(1, 100))
             self.agents.append(
                 Agent(int(random.randrange(MIN_IQ,
                                            MAX_IQ)), int(random.randrange(MIN_EQ, MAX_EQ)),
-                      math.ceil(mass * START_MASS_P),
+                      np.ceil(mass * START_MASS_P),
                       random.uniform(-1, 1), self.id, mass, random.random(), random.random(), self.size_factor))
             self.id += 1
 
@@ -760,7 +775,7 @@ class Sim:
             # because agents have been sorted by x values, it is easy to find the closest agent by comparing the agent before and the one after
 
             ta = self.agents[a + 1 if a != agent_count - 1 else 0]
-            la = self.agents[(a - 1) if a != 1 else agent_count-1]
+            la = self.agents[(a - 1) if a != 1 else agent_count - 1]
 
             dta = mk_round(ta.x - ax)
             dla = mk_round(la.x - ax)
@@ -975,15 +990,15 @@ class Sim:
                     else:
                         row[0] = 255
 
-            r = len(row) / (2 * math.pi)
+            r = len(row) / (2 * np.pi)
 
-            p = np.zeros((math.ceil(2 * r) + 10, math.ceil(2 * r) + 10))
+            p = np.zeros((np.ceil(2 * r) + 10, np.ceil(2 * r) + 10))
 
-            dist_proj = 2 * math.pi / len(row)
+            dist_proj = 2 * np.pi / len(row)
             angle = 0
             for v in row:
-                x = round(r * math.cos(angle) + r)
-                y = round(r * math.sin(angle) + r)
+                x = round(r * np.cos(angle) + r)
+                y = round(r * np.sin(angle) + r)
                 p[y][x] = v
                 p[y + 1][x] = v
                 p[y - 1][x] = v

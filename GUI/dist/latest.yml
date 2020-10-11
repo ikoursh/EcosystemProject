@@ -1,8 +1,8 @@
-version: 1.0.0
+version: 1.0.1
 files:
-  - url: EcoSystem-Project-GUI-Setup-1.0.0.exe
-    sha512: VelyYCvkL8onFDz8OwEusxwyM6HfxwdgVcY2FVflxYGCH0np0/oGE3SjMhxiFhJZ+Fl7/n0mu/8Htx4kKgMtdQ==
-    size: 51226364
-path: EcoSystem-Project-GUI-Setup-1.0.0.exe
-sha512: VelyYCvkL8onFDz8OwEusxwyM6HfxwdgVcY2FVflxYGCH0np0/oGE3SjMhxiFhJZ+Fl7/n0mu/8Htx4kKgMtdQ==
-releaseDate: '2020-08-10T15:38:08.885Z'
+  - url: EcoSystem-Project-GUI-Setup-1.0.1.exe
+    sha512: JvZb1tCE5WxcK37yqgXVjHNUa6jtMwqGjaRxRCCRP8sLwHJmuzroB7yosbZbMTNYNH5QMvo1tbzlP1BC8HBNHQ==
+    size: 55742903
+path: EcoSystem-Project-GUI-Setup-1.0.1.exe
+sha512: JvZb1tCE5WxcK37yqgXVjHNUa6jtMwqGjaRxRCCRP8sLwHJmuzroB7yosbZbMTNYNH5QMvo1tbzlP1BC8HBNHQ==
+releaseDate: '2020-10-11T09:57:15.872Z'

@@ -1,3 +1,21 @@
+#!/usr/bin/env python3
+
+# Ecosystem project - studying natural biological systems using a simulated ecosystem and reinforcement learning.
+# Copyright (C) 2020 Inbar Koursh
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
 import configparser
 import numpy
 import os
@@ -13,7 +31,8 @@ if config["GPU"]["USE_GPU"].lower() == "true":
         import cupy as xp
     except:
         raise Exception(
-            "Error importing CuPy. To ensure that your installation is setup properly go to https://docs-cupy.chainer.org/en/stable/install.html")
+            "Error importing CuPy. To ensure that your installation is setup properly go to "
+            "https://docs-cupy.chainer.org/en/stable/install.html")
 else:
     import numpy as xp
 var = numpy.ndarray

@@ -91,7 +91,8 @@ function createWindow() {
         height: 600,
         icon: "./icon.ico",
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true,
+            enableRemoteModule: true
         }
     });
 
@@ -101,7 +102,8 @@ function createWindow() {
         show: false,
         webPreferences: {
             nodeIntegration: true,
-            backgroundThrottling: false
+            backgroundThrottling: false,
+            enableRemoteModule: true
         }
     });
     workerWindow.loadFile('worker.html');

@@ -8,4 +8,4 @@ extraFiles:
 files:
   - filter:
       - '**/*'
-electronVersion: 9.2.0
+electronVersion: 10.1.3

@@ -94,7 +94,7 @@ function update_command() {
   } else {
     commands = "pip install -r requirements.txt && " + commands
   }
-  command.innerHTML = commands;
+  command.textContent = commands;
 }
 
 function spell() {

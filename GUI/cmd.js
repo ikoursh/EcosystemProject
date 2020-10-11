@@ -11,14 +11,6 @@ exports.run_script = function(command, args, callback, dataCallback) {
     encoding: 'utf8',
     shell: true
   });
-  // You can also use a variable to save the output for when the script closes later
-  // child.on('error', (error) => {
-  //     dialog.showMessageBox({
-  //         title: 'Title',
-  //         type: 'warning',
-  //         message: 'Error occured.\r\n' + error
-  //     });
-  // });
 
   child.stdout.setEncoding('utf8');
   child.stdout.on('data', (data) => {
