@@ -109,7 +109,7 @@ Give a ⭐️ if this project helped you!
 ## 📝 License
 
 Copyright © 2020 [Inbar Koursh](https://github.com/ikoursh).<br />
-The code in this project is [GPL V3](https://www.gnu.org/licenses/gpl-3.0.en.html) licensed.
+The code in this project is [GPL V3](https://www.gnu.org/licenses/gpl-3.0.en.html) licensed. <br />
 The accompanying Project paper is licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
 
 ***
