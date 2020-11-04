@@ -51,7 +51,6 @@ Use
 ===
 In this section, I will outline 3 ways to use this project.
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject?ref=badge_large)
 
 ## Using [auto.py](proj/auto.py)
 
@@ -116,5 +115,11 @@ Copyright © 2020 [Inbar Koursh](https://github.com/ikoursh).<br />
 The code in this project is [GPL V3](https://www.gnu.org/licenses/gpl-3.0.en.html) licensed. <br />
 The accompanying Project paper is licensed under the [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/).
 
+## FOSSA
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject?ref=badge_large)
+
 ***
+
+
 _This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
