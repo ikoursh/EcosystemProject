@@ -7,6 +7,7 @@
   <a href="https://www.gnu.org/licenses/gpl-3.0.en.html" target="_blank">
     <img alt="License: GPL V3" src="https://img.shields.io/badge/License-GPL V3-yellow.svg" />
   </a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject.svg?type=shield"/></a>
 </p>
 
 > Studying natural biological systems using a simulated ecosystem and reinforcement learning.
@@ -49,6 +50,9 @@ Billing costs for Spell are available [here](https://spell.ml/faqs#how-much-does
 Use
 ===
 In this section, I will outline 3 ways to use this project.
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fikoursh%2FEcosystemProject?ref=badge_large)
+
 ## Using [auto.py](proj/auto.py)
 
 [auto.py](proj/auto.py) is the recommended way to use envSim.
