@@ -94,7 +94,7 @@ API Documentation
 ================
 This project was documented in accordance with the Google API standards and was compiled using SPHINX.
 
-https://inbarkoursh.com/ecosystemproject/
+http://ecosystem.inbarkoursh.com/
 
 Miscellaneous
 =============
