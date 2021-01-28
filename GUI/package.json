@@ -7,7 +7,7 @@
   "author": "Inbar Koursh",
   "license": "GPL-3.0",
   "devDependencies": {
-    "electron": "^10.1.3",
+    "electron": "^10.2.0",
     "electron-builder": "^22.8.1"
   },
   "dependencies": {
